@@ -4040,7 +4040,7 @@ LOAD e:/program files/stm workbench/plugins/fr.ac6.mcu.externaltools.arm-none.wi
                 0x00000978       0x1e e:/program files/stm workbench/plugins/fr.ac6.mcu.externaltools.arm-none.win32_1.16.0.201807130628/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v6-m\libgcc.a(_clzdi2.o)
  .ARM.attributes
                 0x00000996       0x1e e:/program files/stm workbench/plugins/fr.ac6.mcu.externaltools.arm-none.win32_1.16.0.201807130628/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v6-m/crtn.o
-OUTPUT(Bender.elf elf32-littlearm)
+OUTPUT(BenderSTM.elf elf32-littlearm)
 
 .debug_info     0x00000000     0x324c
  .debug_info    0x00000000      0xadb src/main.o
@@ -4132,26 +4132,26 @@ OUTPUT(Bender.elf elf32-littlearm)
  .debug_macro   0x00001a9a      0x184 src/timers.o
  .debug_macro   0x00001c1e      0x245 src/usart.o
 
-.debug_line     0x00000000     0x2049
- .debug_line    0x00000000      0x6bc src/main.o
- .debug_line    0x000006bc      0x5ff src/syscalls.o
- .debug_line    0x00000cbb      0x5ca src/system_stm32f0xx.o
- .debug_line    0x00001285      0x5f4 src/timers.o
- .debug_line    0x00001879      0x74f src/usart.o
- .debug_line    0x00001fc8       0x81 startup/startup_stm32f0xx.o
+.debug_line     0x00000000     0x2058
+ .debug_line    0x00000000      0x6cb src/main.o
+ .debug_line    0x000006cb      0x5ff src/syscalls.o
+ .debug_line    0x00000cca      0x5ca src/system_stm32f0xx.o
+ .debug_line    0x00001294      0x5f4 src/timers.o
+ .debug_line    0x00001888      0x74f src/usart.o
+ .debug_line    0x00001fd7       0x81 startup/startup_stm32f0xx.o
 
-.debug_str      0x00000000    0x31684
- .debug_str     0x00000000    0x2ece4 src/main.o
-                              0x2ef3d (size before relaxing)
- .debug_str     0x0002ece4     0x2465 src/syscalls.o
+.debug_str      0x00000000    0x316ac
+ .debug_str     0x00000000    0x2ece7 src/main.o
+                              0x2ef40 (size before relaxing)
+ .debug_str     0x0002ece7     0x248a src/syscalls.o
                                0x8636 (size before relaxing)
- .debug_str     0x00031149      0x11f src/system_stm32f0xx.o
+ .debug_str     0x00031171      0x11f src/system_stm32f0xx.o
                               0x2bcf7 (size before relaxing)
- .debug_str     0x00031268      0x2e2 src/timers.o
+ .debug_str     0x00031290      0x2e2 src/timers.o
                               0x2c15b (size before relaxing)
- .debug_str     0x0003154a      0x10c src/usart.o
+ .debug_str     0x00031572      0x10c src/usart.o
                               0x2f1a4 (size before relaxing)
- .debug_str     0x00031656       0x2e startup/startup_stm32f0xx.o
+ .debug_str     0x0003167e       0x2e startup/startup_stm32f0xx.o
                                  0x53 (size before relaxing)
 
 .comment        0x00000000       0x7e

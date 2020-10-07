@@ -29,13 +29,13 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables 
 
 # All Target
-all: Bender.elf
+all: BenderSTM.elf
 
 # Tool invocations
-Bender.elf: $(OBJS) $(USER_OBJS) C:\Users\eric\workspace\Bender/LinkerScript.ld
+BenderSTM.elf: $(OBJS) $(USER_OBJS) C:\Users\eric\workspace\BenderSTM/LinkerScript.ld
 	@echo 'Building target: $@'
 	@echo 'Invoking: MCU GCC Linker'
-	arm-none-eabi-gcc -mcpu=cortex-m0 -mthumb -mfloat-abi=soft -T"C:/Users/eric/workspace/Bender/LinkerScript.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "Bender.elf" @"objects.list" $(USER_OBJS) $(LIBS) -lm
+	arm-none-eabi-gcc -mcpu=cortex-m0 -mthumb -mfloat-abi=soft -T"C:/Users/eric/workspace/BenderSTM/LinkerScript.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "BenderSTM.elf" @"objects.list" $(USER_OBJS) $(LIBS) -lm
 	@echo 'Finished building target: $@'
 	@echo ' '
 	$(MAKE) --no-print-directory post-build
@@ -47,8 +47,8 @@ clean:
 
 post-build:
 	-@echo 'Generating binary and Printing size information:'
-	arm-none-eabi-objcopy -O binary "Bender.elf" "Bender.bin"
-	arm-none-eabi-size "Bender.elf"
+	arm-none-eabi-objcopy -O binary "BenderSTM.elf" "BenderSTM.bin"
+	arm-none-eabi-size "BenderSTM.elf"
 	-@echo ' '
 
 .PHONY: all clean dependents
