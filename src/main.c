@@ -25,8 +25,8 @@ int main(void)
     actualPosition[0] = 55.123;
     actualPosition[1] = 66.456;
     actualPosition[2] = 77.789;
-    actualPosition[3] = 15.234;
-    actualPosition[4] = 25.567;
+    actualPosition[3] = 9.234;
+    actualPosition[4] = 19.567;
 
     while(1)
     {
