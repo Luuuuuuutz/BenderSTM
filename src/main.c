@@ -22,9 +22,9 @@ int main(void)
 
     //softwareTimerInit();        //Start the timer to send data over USART
 
-    actualPosition[0] = 55.123;
-    actualPosition[1] = 66.456;
-    actualPosition[2] = 77.789;
+    actualPosition[0] = 14.123;
+    actualPosition[1] = 67.456;
+    actualPosition[2] = 87.789;
     actualPosition[3] = 9.234;
     actualPosition[4] = 19.567;
 
