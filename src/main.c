@@ -38,7 +38,7 @@ int main(void)
 
     readGCodeLine(&FatFs, Fil);
 
-    //TEST CODE
+    //TEST CODE MAIN BLA BLA
 
     actualPosition[0] = 14.123;
     actualPosition[1] = 67.456;
