@@ -24,5 +24,4 @@ void mode(int mode);
 void G92(double x_d,double y_d,double z_d,double a_d, double b_d, double *actual);
 
 
-
 #endif

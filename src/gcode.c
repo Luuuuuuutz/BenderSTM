@@ -1,4 +1,3 @@
-
 #include "gcode.h"
 
 void openFileG(FATFS* FatFs, FIL Fil)

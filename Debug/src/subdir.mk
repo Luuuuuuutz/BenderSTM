@@ -7,9 +7,12 @@ S_SRCS += \
 ../src/micro_wait.s 
 
 C_SRCS += \
+../src/fat16.c \
+../src/ff.c \
 ../src/gcode.c \
 ../src/main.c \
 ../src/sd.c \
+../src/sdmm.c \
 ../src/spi.c \
 ../src/syscalls.c \
 ../src/system_stm32f0xx.c \
@@ -17,10 +20,13 @@ C_SRCS += \
 ../src/usart.c 
 
 OBJS += \
+./src/fat16.o \
+./src/ff.o \
 ./src/gcode.o \
 ./src/main.o \
 ./src/micro_wait.o \
 ./src/sd.o \
+./src/sdmm.o \
 ./src/spi.o \
 ./src/syscalls.o \
 ./src/system_stm32f0xx.o \
@@ -28,9 +34,12 @@ OBJS += \
 ./src/usart.o 
 
 C_DEPS += \
+./src/fat16.d \
+./src/ff.d \
 ./src/gcode.d \
 ./src/main.d \
 ./src/sd.d \
+./src/sdmm.d \
 ./src/spi.d \
 ./src/syscalls.d \
 ./src/system_stm32f0xx.d \
