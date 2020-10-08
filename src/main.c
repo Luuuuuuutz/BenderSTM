@@ -11,8 +11,12 @@
 #include "stm32f0xx.h"
 #include "stm32f0_discovery.h"
 #include "string.h"
+
 #include "global.h"
 #include "usart.h"
+#include "spi.h"
+#include "gcode.h"
+#include "ff.h"
 
 int main(void)
 {
@@ -22,6 +26,14 @@ int main(void)
 
     //softwareTimerInit();        //Start the timer to send data over USART
 
+    spi_initialize();
+
+    openFile();
+
+    //readGCodeLine();
+
+
+
     actualPosition[0] = 14.123;
     actualPosition[1] = 67.456;
     actualPosition[2] = 87.789;
@@ -30,6 +42,15 @@ int main(void)
 
     while(1)
     {
+
+
+
+    	if (zFlag == true)
+    	{
+    		//Read next file line and do Vidya stuff
+    	}
+
+
 
         if (rxFlag == true)
         {

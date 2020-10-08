@@ -2,8 +2,8 @@
 #include "stm32f0_discovery.h"
 #include "global.h"
 
-#ifndef SPI_H
-#define SPI_H
+#ifndef __SPI_H
+#define __SPI_H
 
 void spi_initialize(void);
 void spi_speed(void);

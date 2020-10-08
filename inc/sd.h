@@ -1,5 +1,5 @@
-#ifndef SD_H
-#define SD_H
+#ifndef __SD_H
+#define __SD_H
 
 #include "spi.h"
 #include "stm32f0xx.h"

@@ -7,6 +7,7 @@ S_SRCS += \
 ../src/micro_wait.s 
 
 C_SRCS += \
+../src/gcode.c \
 ../src/main.c \
 ../src/sd.c \
 ../src/spi.c \
@@ -16,6 +17,7 @@ C_SRCS += \
 ../src/usart.c 
 
 OBJS += \
+./src/gcode.o \
 ./src/main.o \
 ./src/micro_wait.o \
 ./src/sd.o \
@@ -26,6 +28,7 @@ OBJS += \
 ./src/usart.o 
 
 C_DEPS += \
+./src/gcode.d \
 ./src/main.d \
 ./src/sd.d \
 ./src/spi.d \

@@ -20,6 +20,7 @@
 "StdPeriph_Driver/src/stm32f0xx_usart.o"
 "StdPeriph_Driver/src/stm32f0xx_wwdg.o"
 "Utilities/stm32f0_discovery.o"
+"src/gcode.o"
 "src/main.o"
 "src/micro_wait.o"
 "src/sd.o"

@@ -27,7 +27,9 @@ src/timers.o: ../src/timers.c \
  C:/Users/eric/workspace/BenderSTM/StdPeriph_Driver/inc/stm32f0xx_misc.h \
  C:/Users/eric/workspace/BenderSTM/Utilities/stm32f0_discovery.h \
  C:/Users/eric/workspace/BenderSTM/inc/timers.h \
- C:/Users/eric/workspace/BenderSTM/inc/global.h
+ C:/Users/eric/workspace/BenderSTM/inc/global.h \
+ C:/Users/eric/workspace/BenderSTM/inc/ff.h \
+ C:/Users/eric/workspace/BenderSTM/inc/ffconf.h
 
 C:/Users/eric/workspace/BenderSTM/CMSIS/device/stm32f0xx.h:
 
@@ -86,3 +88,7 @@ C:/Users/eric/workspace/BenderSTM/Utilities/stm32f0_discovery.h:
 C:/Users/eric/workspace/BenderSTM/inc/timers.h:
 
 C:/Users/eric/workspace/BenderSTM/inc/global.h:
+
+C:/Users/eric/workspace/BenderSTM/inc/ff.h:
+
+C:/Users/eric/workspace/BenderSTM/inc/ffconf.h:
