@@ -116,6 +116,9 @@ __lock___arc4random_mutex
                     0x1               c:/ac6/systemworkbench/plugins/fr.ac6.mcu.externaltools.arm-none.win32_1.16.0.201807130628/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc.a(lib_a-lock.o)
 txFlag              0x4               src/main.o
 errno               0x4               c:/ac6/systemworkbench/plugins/fr.ac6.mcu.externaltools.arm-none.win32_1.16.0.201807130628/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc.a(lib_a-reent.o)
+status_             0x1               src/sd.o
+sd_type             0x1               src/sd.o
+partialBlockRead_   0x1               src/sd.o
 command             0x32              src/main.o
 __lock___env_recursive_mutex
                     0x1               c:/ac6/systemworkbench/plugins/fr.ac6.mcu.externaltools.arm-none.win32_1.16.0.201807130628/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc.a(lib_a-lock.o)
@@ -124,6 +127,8 @@ __lock___sinit_recursive_mutex
 __lock___malloc_recursive_mutex
                     0x1               c:/ac6/systemworkbench/plugins/fr.ac6.mcu.externaltools.arm-none.win32_1.16.0.201807130628/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc.a(lib_a-lock.o)
 actualPosition      0x28              src/main.o
+offset_             0x1               src/sd.o
+inBlock_            0x1               src/sd.o
 __lock___at_quick_exit_mutex
                     0x1               c:/ac6/systemworkbench/plugins/fr.ac6.mcu.externaltools.arm-none.win32_1.16.0.201807130628/tools/compiler/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v6-m\libc.a(lib_a-lock.o)
 rx_index            0x4               src/main.o
@@ -2905,6 +2910,188 @@ Discarded input sections
  .debug_str     0x00000000       0x4b src/micro_wait.o
  .ARM.attributes
                 0x00000000       0x21 src/micro_wait.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .group         0x00000000        0xc src/sd.o
+ .text          0x00000000        0x0 src/sd.o
+ .data          0x00000000        0x0 src/sd.o
+ .bss           0x00000000        0x0 src/sd.o
+ .rodata        0x00000000       0x17 src/sd.o
+ .text.nano_wait
+                0x00000000       0x18 src/sd.o
+ .text.sd_initialize
+                0x00000000       0xc4 src/sd.o
+ .text.sd_ready
+                0x00000000       0xd8 src/sd.o
+ .text.sd_command
+                0x00000000       0xd0 src/sd.o
+ .text.sd_acommand
+                0x00000000       0x30 src/sd.o
+ .debug_info    0x00000000      0x5a5 src/sd.o
+ .debug_abbrev  0x00000000      0x163 src/sd.o
+ .debug_aranges
+                0x00000000       0x40 src/sd.o
+ .debug_ranges  0x00000000       0x30 src/sd.o
+ .debug_macro   0x00000000      0x1a5 src/sd.o
+ .debug_macro   0x00000000      0xa60 src/sd.o
+ .debug_macro   0x00000000       0x7b src/sd.o
+ .debug_macro   0x00000000       0x34 src/sd.o
+ .debug_macro   0x00000000       0x22 src/sd.o
+ .debug_macro   0x00000000       0x87 src/sd.o
+ .debug_macro   0x00000000       0x51 src/sd.o
+ .debug_macro   0x00000000       0xef src/sd.o
+ .debug_macro   0x00000000       0x6a src/sd.o
+ .debug_macro   0x00000000      0x1df src/sd.o
+ .debug_macro   0x00000000      0x249 src/sd.o
+ .debug_macro   0x00000000     0x3334 src/sd.o
+ .debug_macro   0x00000000      0x18b src/sd.o
+ .debug_macro   0x00000000       0x28 src/sd.o
+ .debug_macro   0x00000000       0xe7 src/sd.o
+ .debug_macro   0x00000000       0x93 src/sd.o
+ .debug_macro   0x00000000       0x70 src/sd.o
+ .debug_macro   0x00000000      0x225 src/sd.o
+ .debug_macro   0x00000000       0xb8 src/sd.o
+ .debug_macro   0x00000000      0x16f src/sd.o
+ .debug_macro   0x00000000      0x185 src/sd.o
+ .debug_macro   0x00000000      0x123 src/sd.o
+ .debug_macro   0x00000000      0x2a0 src/sd.o
+ .debug_macro   0x00000000       0x70 src/sd.o
+ .debug_macro   0x00000000       0xb2 src/sd.o
+ .debug_macro   0x00000000      0x44c src/sd.o
+ .debug_macro   0x00000000      0x46a src/sd.o
+ .debug_macro   0x00000000      0x396 src/sd.o
+ .debug_macro   0x00000000      0x750 src/sd.o
+ .debug_macro   0x00000000      0x34d src/sd.o
+ .debug_macro   0x00000000       0x34 src/sd.o
+ .debug_macro   0x00000000       0x3a src/sd.o
+ .debug_macro   0x00000000       0x64 src/sd.o
+ .debug_macro   0x00000000       0x1c src/sd.o
+ .debug_macro   0x00000000       0x16 src/sd.o
+ .debug_line    0x00000000      0x677 src/sd.o
+ .debug_str     0x00000000    0x2c03c src/sd.o
+ .comment       0x00000000       0x7f src/sd.o
+ .debug_frame   0x00000000       0xb4 src/sd.o
+ .ARM.attributes
+                0x00000000       0x31 src/sd.o
+ COMMON         0x00000000        0x5 src/sd.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .group         0x00000000        0xc src/spi.o
+ .text          0x00000000        0x0 src/spi.o
+ .data          0x00000000        0x0 src/spi.o
+ .bss           0x00000000        0x0 src/spi.o
+ .text.spi_initialize
+                0x00000000      0x2f4 src/spi.o
+ .text.spi_speed
+                0x00000000       0x50 src/spi.o
+ .text.spi_write_read
+                0x00000000       0x8c src/spi.o
+ .debug_info    0x00000000      0x479 src/spi.o
+ .debug_abbrev  0x00000000       0xff src/spi.o
+ .debug_aranges
+                0x00000000       0x30 src/spi.o
+ .debug_ranges  0x00000000       0x20 src/spi.o
+ .debug_macro   0x00000000      0x18a src/spi.o
+ .debug_macro   0x00000000      0xa60 src/spi.o
+ .debug_macro   0x00000000       0x7b src/spi.o
+ .debug_macro   0x00000000       0x34 src/spi.o
+ .debug_macro   0x00000000       0x22 src/spi.o
+ .debug_macro   0x00000000       0x87 src/spi.o
+ .debug_macro   0x00000000       0x51 src/spi.o
+ .debug_macro   0x00000000       0xef src/spi.o
+ .debug_macro   0x00000000       0x6a src/spi.o
+ .debug_macro   0x00000000      0x1df src/spi.o
+ .debug_macro   0x00000000      0x249 src/spi.o
+ .debug_macro   0x00000000     0x3334 src/spi.o
+ .debug_macro   0x00000000      0x18b src/spi.o
+ .debug_macro   0x00000000       0x28 src/spi.o
+ .debug_macro   0x00000000       0xe7 src/spi.o
+ .debug_macro   0x00000000       0x93 src/spi.o
+ .debug_macro   0x00000000       0x70 src/spi.o
+ .debug_macro   0x00000000      0x225 src/spi.o
+ .debug_macro   0x00000000       0xb8 src/spi.o
+ .debug_macro   0x00000000      0x16f src/spi.o
+ .debug_macro   0x00000000      0x185 src/spi.o
+ .debug_macro   0x00000000      0x123 src/spi.o
+ .debug_macro   0x00000000      0x2a0 src/spi.o
+ .debug_macro   0x00000000       0x70 src/spi.o
+ .debug_macro   0x00000000       0xb2 src/spi.o
+ .debug_macro   0x00000000      0x44c src/spi.o
+ .debug_macro   0x00000000      0x46a src/spi.o
+ .debug_macro   0x00000000      0x396 src/spi.o
+ .debug_macro   0x00000000      0x750 src/spi.o
+ .debug_macro   0x00000000      0x34d src/spi.o
+ .debug_macro   0x00000000       0x34 src/spi.o
+ .debug_macro   0x00000000       0x3a src/spi.o
+ .debug_macro   0x00000000       0x64 src/spi.o
+ .debug_macro   0x00000000       0x1c src/spi.o
+ .debug_line    0x00000000      0x62e src/spi.o
+ .debug_str     0x00000000    0x2bf85 src/spi.o
+ .comment       0x00000000       0x7f src/spi.o
+ .debug_frame   0x00000000       0x68 src/spi.o
+ .ARM.attributes
+                0x00000000       0x31 src/spi.o
  .group         0x00000000        0xc src/syscalls.o
  .group         0x00000000        0xc src/syscalls.o
  .group         0x00000000        0xc src/syscalls.o
@@ -3481,6 +3668,8 @@ LOAD StdPeriph_Driver/src/stm32f0xx_wwdg.o
 LOAD Utilities/stm32f0_discovery.o
 LOAD src/main.o
 LOAD src/micro_wait.o
+LOAD src/sd.o
+LOAD src/spi.o
 LOAD src/syscalls.o
 LOAD src/system_stm32f0xx.o
 LOAD src/timers.o

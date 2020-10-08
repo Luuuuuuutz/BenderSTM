@@ -22,6 +22,8 @@
 "Utilities/stm32f0_discovery.o"
 "src/main.o"
 "src/micro_wait.o"
+"src/sd.o"
+"src/spi.o"
 "src/syscalls.o"
 "src/system_stm32f0xx.o"
 "src/timers.o"

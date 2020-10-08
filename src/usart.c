@@ -27,7 +27,7 @@ void usart1Init(int baud)
     USART1->CR1 &= ~USART_CR1_M;            //Word length to be 8 bits, 1 start, 1 stop, no parity
     USART1->CR1 &= ~(USART_CR1_M << 16);    //Clear both M bits
     USART1->CR1 &= ~USART_CR1_OVER8;        //Oversample by x16
-    USART1->CR1 &= ~USART_CR1_RXNEIE;        //Enable receiver interrupt
+    USART1->CR1 &= ~USART_CR1_RXNEIE;       //Enable receiver interrupt
     USART1->CR1 |= USART_CR1_RXNEIE;
     USART1->CR1 |= USART_CR1_RTOIE;         //Enable receiver timeout interrupt
     USART1->CR1 |= USART_CR1_TE;            //Enable TX

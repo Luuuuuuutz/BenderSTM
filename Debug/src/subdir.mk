@@ -8,6 +8,8 @@ S_SRCS += \
 
 C_SRCS += \
 ../src/main.c \
+../src/sd.c \
+../src/spi.c \
 ../src/syscalls.c \
 ../src/system_stm32f0xx.c \
 ../src/timers.c \
@@ -16,6 +18,8 @@ C_SRCS += \
 OBJS += \
 ./src/main.o \
 ./src/micro_wait.o \
+./src/sd.o \
+./src/spi.o \
 ./src/syscalls.o \
 ./src/system_stm32f0xx.o \
 ./src/timers.o \
@@ -23,6 +27,8 @@ OBJS += \
 
 C_DEPS += \
 ./src/main.d \
+./src/sd.d \
+./src/spi.d \
 ./src/syscalls.d \
 ./src/system_stm32f0xx.d \
 ./src/timers.d \
