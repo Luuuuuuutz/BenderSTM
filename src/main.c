@@ -15,8 +15,14 @@
 #include "global.h"
 #include "usart.h"
 #include "spi.h"
-#include "gcode.h"
 #include "ff.h"
+#include "fat16.h"
+
+#include "gcode.h"
+
+
+FATFS FatFs;
+FIL Fil;
 
 int main(void)
 {
@@ -28,9 +34,9 @@ int main(void)
 
     spi_initialize();
 
-    openFile();
+    openFileG(&FatFs, Fil);
 
-    //readGCodeLine();
+    readGCodeLine(&FatFs, Fil);
 
 
 
@@ -114,3 +120,9 @@ int main(void)
 
 	for(;;);
 }
+
+
+
+
+
+

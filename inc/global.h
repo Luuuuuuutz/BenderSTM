@@ -1,5 +1,3 @@
-#include "ff.h"
-
 #ifndef __GLOBAL_H
 #define __GLOBAL_H
 
@@ -19,8 +17,7 @@ int RELATIVE;
 int ABSOLUTE;
 
 //SD Card Variables
-FATFS FatFs;
-FIL Fil;
+
 
 //USART variables
 char messageRX[RXLENGTH];
@@ -42,8 +39,6 @@ extern double homePosition[5];
 extern int RELATIVE;
 extern int ABSOLUTE;
 
-extern FATFS FatFs;
-extern FIL Fil;
 
 extern char messageRX[RXLENGTH];
 extern char command[RXLENGTH];

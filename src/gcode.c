@@ -1,14 +1,7 @@
-#include "stm32f0xx.h"
-#include "stm32f0_discovery.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
 
 #include "gcode.h"
 
-
-void openFile()
+void openFileG(FATFS* FatFs, FIL Fil)
 {
 	FRESULT res;
 
@@ -17,16 +10,16 @@ void openFile()
 	if (result || 0)
 		return;
 
-	f_mount(&FatFs, "", 0);
+	res = f_mount(FatFs, "", 0);
 
 	res = f_open(&Fil, "simple.gc", FA_READ | FA_OPEN_EXISTING);
 
-	if (res)
-		return;
+	//if (res)
+	//	return;
 
 }
 
-void readGCodeLine()
+void readGCodeLine(FATFS* FatFs, FIL Fil)
 {
 
     char* data_ptr;
@@ -45,7 +38,7 @@ void readGCodeLine()
 
     int line_index = 0;
     int data_ptr_index = 0;
-   
+
     TCHAR* res;
 	UINT btr = sizeof line / sizeof line[0];
 
@@ -66,14 +59,14 @@ void readGCodeLine()
                     case 'X': data_ptr = X;
                     case 'Y': data_ptr = Y;
                     case 'Z': data_ptr = Z;
-                    case 'A': data_ptr = A;  
+                    case 'A': data_ptr = A;
                     case 'B': data_ptr = B;
-                }        
-                data_ptr_index = 0;        
+                }
+                data_ptr_index = 0;
             }
             else if((isalpha(line[line_index]) == 0) || (line[line_index] == '.'))
             {
-                   data_ptr[data_ptr_index] = line[line_index]; 
+                   data_ptr[data_ptr_index] = line[line_index];
                    data_ptr_index++;
             }
             line_index++;
@@ -83,7 +76,7 @@ void readGCodeLine()
         y_d = strtod(Y,&eptr);
         z_d = strtod(Z,&eptr);
         a_d = strtod(A,&eptr);
-        b_d = strtod(B,&eptr); 
+        b_d = strtod(B,&eptr);
 
         //Determine which G Code function to call
 
@@ -111,14 +104,14 @@ void readGCodeLine()
         {
            G92(x_d,y_d,z_d,a_d,b_d,actualPosition);
         }
-        else if(strncmp(line,"G90",3) == 0) 
+        else if(strncmp(line,"G90",3) == 0)
         {
             mode(ABSOLUTE);
         }
-        else if(strncmp(line,"G91",3) == 0) 
+        else if(strncmp(line,"G91",3) == 0)
         {
             mode(RELATIVE);
-        } 
+        }
 
         memset(line,0,100);
         memset(G,0,10);
