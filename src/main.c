@@ -38,7 +38,7 @@ int main(void)
 
     readGCodeLine(&FatFs, Fil);
 
-
+    //TEST CODE
 
     actualPosition[0] = 14.123;
     actualPosition[1] = 67.456;
@@ -48,7 +48,6 @@ int main(void)
 
     while(1)
     {
-
 
 
     	if (zFlag == true)
