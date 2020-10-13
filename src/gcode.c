@@ -1,6 +1,15 @@
 #include "gcode.h"
+#include "sd.h"
 
-void openFileG(FATFS* FatFs, FIL Fil)
+#include "spi.h"
+#include "ff.h"
+#include "fat16.h"
+
+FATFS FatFs;
+FIL Fil;
+
+//FATFS* FatFs, FIL Fil
+void openFile()
 {
 	FRESULT res;
 
@@ -9,23 +18,27 @@ void openFileG(FATFS* FatFs, FIL Fil)
 	if (result || 0)
 		return;
 
-	res = f_mount(FatFs, "", 0);
+	res = f_mount(&FatFs, "", 0);
 
 	res = f_open(&Fil, "simple.gc", FA_READ | FA_OPEN_EXISTING);
 
-	//if (res)
-	//	return;
+	//if (res != FR_OK)
+		//return;
 
 }
 
-void readGCodeLine(FATFS* FatFs, FIL Fil)
+//FATFS* FatFs, FIL Fil
+void readGCodeLine()
 {
 
     char* data_ptr;
-    char* eptr;
-    char line[100];
+    char* eptrX;
+    char* eptrY;
+    char* eptrZ;
+    char* eptrA;
+    char* eptrB;
+    char line[100] = {'\0'};
     char G[10] = {0};
-
     char M[10] = {0};
     char X[10] = {0};
     char Y[10] = {0};
@@ -33,19 +46,22 @@ void readGCodeLine(FATFS* FatFs, FIL Fil)
     char A[10] = {0};
     char B[10] = {0};
 
-    double x_d,y_d,z_d,a_d,b_d;
+    double x_d = 0;
+    double y_d = 0;
+    double z_d = 0;
+    double a_d = 0;
+    double b_d = 0;
 
     int line_index = 0;
     int data_ptr_index = 0;
 
-    TCHAR* res;
+    //TCHAR* res;
 	UINT btr = sizeof line / sizeof line[0];
-
 
     while(!f_eof(&Fil))
     {
 
-        res = f_gets(line, btr, &Fil);
+        f_gets(line, btr, &Fil);
 
         while(line[line_index] != '\0')
         {
@@ -54,12 +70,19 @@ void readGCodeLine(FATFS* FatFs, FIL Fil)
                 switch(line[line_index])
                 {
                     case 'G': data_ptr = G;
+                    		  break;
                     case 'M': data_ptr = M;
+                    		  break;
                     case 'X': data_ptr = X;
+                    		  break;
                     case 'Y': data_ptr = Y;
+                    		  break;
                     case 'Z': data_ptr = Z;
+                    		  break;
                     case 'A': data_ptr = A;
+                    		  break;
                     case 'B': data_ptr = B;
+                    		  break;
                 }
                 data_ptr_index = 0;
             }
@@ -68,14 +91,17 @@ void readGCodeLine(FATFS* FatFs, FIL Fil)
                    data_ptr[data_ptr_index] = line[line_index];
                    data_ptr_index++;
             }
+
             line_index++;
+
         }
 
-        x_d = strtod(X,&eptr);
-        y_d = strtod(Y,&eptr);
-        z_d = strtod(Z,&eptr);
-        a_d = strtod(A,&eptr);
-        b_d = strtod(B,&eptr);
+        x_d = strtod(X,&eptrX);
+        y_d = strtod(Y,&eptrY);
+        z_d = strtod(Z,&eptrZ);
+        a_d = strtod(A,&eptrA);
+        b_d = strtod(B,&eptrB);
+
 
         //Determine which G Code function to call
 
@@ -84,7 +110,7 @@ void readGCodeLine(FATFS* FatFs, FIL Fil)
            G0(x_d,y_d,z_d,a_d,b_d,commandedPosition);
         }
 
-        else if((strncmp(line,"G01",3) == 0) || (strncmp(line,"G1",2) == 0))
+        else if((strncmp(line,"G02",3) == 0) || (strncmp(line,"G1",2) == 0))
         {
             G1(x_d,y_d,z_d,a_d,b_d,commandedPosition);
         }

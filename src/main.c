@@ -32,11 +32,13 @@ int main(void)
 
     //softwareTimerInit();        //Start the timer to send data over USART
 
-    spi_initialize();
+    //spi_initialize();
 
-    openFileG(&FatFs, Fil);
+    //&FatFs, Fil
+    openFile();
 
-    readGCodeLine(&FatFs, Fil);
+    //&FatFs, Fil
+    readGCodeLine();
 
     //TEST CODE MAIN BLA BLA
 

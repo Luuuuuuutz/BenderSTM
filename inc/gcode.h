@@ -14,7 +14,7 @@
 #define __GCODE_H
 
 
-//void openFileG(FATFS &FatFs, FIL &Fil);
+//void openFile(FATFS &FatFs, FIL &Fil);
 //void readGCodeLine(FATFS*, FIL*);
 void G0(double x_d,double y_d,double z_d,double a_d, double b_d,double *commanded);
 void G1(double x_d,double y_d,double z_d,double a_d, double b_d, double* actual);
