@@ -64,6 +64,7 @@ int main(void)
             rxFlag = false; //Reset the flag
             //Do work
             //Call Vidya's function to interpret G Code
+           // CheckGCodeLine(messageRX, X, Y, Z, A, B); //Figure out what X,Y,Z,A,B
         }
 
         if (txFlag == true)
