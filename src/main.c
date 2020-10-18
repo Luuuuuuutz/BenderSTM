@@ -33,7 +33,11 @@ int main(void)
     //softwareTimerInit();        //Start the timer to send data over USART
 
     //spi_initialize();
+/*
+    setup_GPIO();
 
+    GPIOC->BSRR |= 1<<6;
+*/
     //&FatFs, Fil
     openFile();
 
@@ -64,7 +68,7 @@ int main(void)
             rxFlag = false; //Reset the flag
             //Do work
             //Call Vidya's function to interpret G Code
-           // CheckGCodeLine(messageRX, X, Y, Z, A, B); //Figure out what X,Y,Z,A,B
+            CheckGCodeLine(messageRX);
         }
 
         if (txFlag == true)

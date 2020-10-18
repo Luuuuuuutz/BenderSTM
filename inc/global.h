@@ -30,6 +30,7 @@ bool txFlag;
 
 //Stepper control variables
 bool zFlag;
+double stepsPerMM[5];                   //Array of the number of steps per mm for each axis motor
 
 #else
 //If GLOBAL already exists when this header is called then reference the extern variables
@@ -46,5 +47,6 @@ extern int rx_index;
 extern bool rxFlag;
 extern bool txFlag;
 extern bool zFlag;
+extern double stepsPerMM[5];                   //Array of the number of steps per mm for each axis motor
 
 #endif

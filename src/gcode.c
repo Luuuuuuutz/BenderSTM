@@ -8,6 +8,13 @@
 FATFS FatFs;
 FIL Fil;
 
+char X[10];
+char Y[10];
+char Z[10];
+char A[10];
+char B[10];
+
+
 //FATFS* FatFs, FIL Fil
 void openFile()
 {
@@ -32,24 +39,24 @@ void readGCodeLine()
 {
     char line[100] = {'\0'};
 
-    char X[10] = {0};
-    char Y[10] = {0};
-    char Z[10] = {0};
-    char A[10] = {0};
-    char B[10] = {0};
+    memset(X,0,10);
+    memset(Y,0,10);
+    memset(Z,0,10);
+    memset(A,0,10);
+    memset(B,0,10);
 
 	UINT btr = sizeof line / sizeof line[0];
 
     while(!f_eof(&Fil))
     {
         f_gets(line, btr, &Fil);
-        CheckGCodeLine(line, X, Y, Z, A, B);
+        CheckGCodeLine(line);
     }
 }
 
 //Functions
 
-void CheckGCodeLine(char* line, char* X, char* Y, char* Z, char* A, char* B)
+void CheckGCodeLine(char* line)
 {
 	char* data_ptr;
     char* eptrX;
