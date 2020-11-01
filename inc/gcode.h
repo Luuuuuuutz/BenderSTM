@@ -22,6 +22,7 @@ void G28(double *home, double *commanded);
 void G281(double x_d,double y_d,double z_d,double a_d, double b_d, double *home);
 void mode(int mode);
 void G92(double x_d,double y_d,double z_d,double a_d, double b_d, double *actual);
+void M92(double x_d,double y_d,double z_d,double a_d, double b_d);
 
 
 #endif

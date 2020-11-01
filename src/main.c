@@ -14,6 +14,7 @@
 
 #include "global.h"
 #include "usart.h"
+#include "motorSubsystemCalls.h"
 #include "spi.h"
 #include "ff.h"
 #include "fat16.h"
@@ -21,47 +22,64 @@
 #include "gcode.h"
 
 
-FATFS FatFs;
-FIL Fil;
-
 int main(void)
 {
+	startBendCycleFlag = true;
+	bool isEndLine;
 
-    usart1Init(115200);         //Enable USART1 at 115200 baud
-    //usart1DMAInit(messageRX);   //Enable DMA for USART1 to capture first message
-
+    //usart1Init(115200);         //Enable USART1 at 115200 baud
     //softwareTimerInit();        //Start the timer to send data over USART
 
-    //spi_initialize();
-/*
-    setup_GPIO();
-
-    GPIOC->BSRR |= 1<<6;
-*/
-    //&FatFs, Fil
-    openFile();
-
-    //&FatFs, Fil
-    readGCodeLine();
+    setupTimer3();
+    setupGPIO();
 
     //TEST CODE MAIN BLA BLA
 
-    actualPosition[0] = 14.123;
-    actualPosition[1] = 67.456;
-    actualPosition[2] = 87.789;
-    actualPosition[3] = 9.234;
-    actualPosition[4] = 19.567;
+    actualPosition[0] = 0.000;
+    actualPosition[1] = 0.000;
+    actualPosition[2] = 0.000;
+    actualPosition[3] = 0.000;
+    actualPosition[4] = 0.000;
 
     while(1)
     {
 
+    	if (startBendCycleFlag == true)
+    	{
+    		startBendCycleFlag = false;
+    		//First open the file
+    	    openFile();
+    	    isEndLine = readGCodeLine();	//Then read the first line to begin the process
+
+    	    //We have to find a way to read the first few lines to set up the bender before
+    	    //starting the bend cycle
+
+    	}
+
+    	if (readNextLineFlag == true)
+    	{
+    		readNextLineFlag = false;
+    		isEndLine = readGCodeLine();
+    	}
 
     	if (zFlag == true)
     	{
-    		//Read next file line and do Vidya stuff
+    		zFlag = false;
+
+    		while(isLineReady == true)
+    		{
+    		commandedPosition[0] = nextCommandedPosition[0];
+    		commandedPosition[1] = nextCommandedPosition[1];
+    		commandedPosition[2] = nextCommandedPosition[2];
+    		commandedPosition[3] = nextCommandedPosition[3];
+    		commandedPosition[4] = nextCommandedPosition[4];
+    		}
+
+
+    		//First read the next line of G-Code then call the motor subsystem
+    		isEndLine = readGCodeLine();
+
     	}
-
-
 
         if (rxFlag == true)
         {

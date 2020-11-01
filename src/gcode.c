@@ -14,8 +14,8 @@ char Z[10];
 char A[10];
 char B[10];
 
+int setupmotor_flag = 0;
 
-//FATFS* FatFs, FIL Fil
 void openFile()
 {
 	FRESULT res;
@@ -35,7 +35,7 @@ void openFile()
 }
 
 //FATFS* FatFs, FIL Fil
-void readGCodeLine()
+bool readGCodeLine()
 {
     char line[100] = {'\0'};
 
@@ -47,10 +47,15 @@ void readGCodeLine()
 
 	UINT btr = sizeof line / sizeof line[0];
 
-    while(!f_eof(&Fil))
+    if(f_eof(&Fil))
+    {
+    	return true;
+    }
+    else
     {
         f_gets(line, btr, &Fil);
         CheckGCodeLine(line);
+    	return false;
     }
 }
 
@@ -121,69 +126,97 @@ void CheckGCodeLine(char* line)
 
     if(strncmp(line,"G0",2) == 0)
     {
-       G0(x_d,y_d,z_d,a_d,b_d,commandedPosition);
+       G0(x_d,y_d,z_d,a_d,b_d,nextCommandedPosition);
+       readNextLineFlag = true;
     }
 
     else if((strncmp(line,"G01",3) == 0) || (strncmp(line,"G1",2) == 0))
     {
-        G1(x_d,y_d,z_d,a_d,b_d,commandedPosition);
+        G1(x_d,y_d,z_d,a_d,b_d,nextCommandedPosition);
+
+        setupMotor();
+
+        //setupmotor_flag++;
+        //if(setupmotor_flag == 1)
+        //{
+        //	setupMotor();
+        //}
     }
 
     else if(strncmp(line,"G28",3) == 0)
     {
-        G28(homePosition, commandedPosition);
+        G28(homePosition, nextCommandedPosition);
+
+        setupMotor();
     }
 
     else if(strncmp(line,"G28.1",5) == 0)
     {
        G281(x_d,y_d,z_d,a_d,b_d,homePosition);
+       readNextLineFlag = true;
     }
 
     else if(strncmp(line,"G92",3) == 0)
     {
        G92(x_d,y_d,z_d,a_d,b_d,actualPosition);
+       readNextLineFlag = true;
     }
 
     else if(strncmp(line,"G90",3) == 0)
     {
         mode(ABSOLUTE);
+        readNextLineFlag = true;
     }
 
     else if(strncmp(line,"G91",3) == 0)
     {
         mode(RELATIVE);
+        readNextLineFlag = true;
+    }
+
+    else if(strncmp(line,"M92",3) == 0)
+    {
+    	M92(x_d, y_d, z_d, a_d, b_d);
+    	readNextLineFlag = true;
     }
 
     memset(line,0,100);
     memset(G,0,10);
     memset(M,0,10);
+
+    //if (setupmotor_flag < 1)
+    //{
+    //	readNextLineFlag = true;
+    //}
+
 }
 
-void G0(double x_d,double y_d,double z_d,double a_d, double b_d, double *commandedPosition)
+void G0(double x_d,double y_d,double z_d,double a_d, double b_d, double *nextCommandedPosition)
 {
-    commandedPosition[0] = x_d;
-    commandedPosition[1] = y_d;
-    commandedPosition[2] = z_d;
-    commandedPosition[3] = a_d;
-    commandedPosition[4] = b_d;
+    nextCommandedPosition[0] = x_d;
+    nextCommandedPosition[1] = y_d;
+    nextCommandedPosition[2] = z_d;
+    nextCommandedPosition[3] = a_d;
+    nextCommandedPosition[4] = b_d;
+
 }
 
-void G1(double x_d,double y_d,double z_d,double a_d, double b_d, double *commandedPosition)
+void G1(double x_d,double y_d,double z_d,double a_d, double b_d, double *nextCommandedPosition)
 {
-    commandedPosition[0] = x_d;
-    commandedPosition[1] = y_d;
-    commandedPosition[2] = z_d;
-    commandedPosition[3] = a_d;
-    commandedPosition[4] = b_d;
+    nextCommandedPosition[0] = x_d;
+    nextCommandedPosition[1] = y_d;
+    nextCommandedPosition[2] = z_d;
+    nextCommandedPosition[3] = a_d;
+    nextCommandedPosition[4] = b_d;
 }
 
-void G28(double *homePosition, double *commandedPosition)
+void G28(double *homePosition, double *nextCommandedPosition)
 {
-    commandedPosition[0] = homePosition[0];
-    commandedPosition[1] = homePosition[1];
-    commandedPosition[2] = homePosition[2];
-    commandedPosition[3] = homePosition[3];
-    commandedPosition[4] = homePosition[4];
+    nextCommandedPosition[0] = homePosition[0];
+    nextCommandedPosition[1] = homePosition[1];
+    nextCommandedPosition[2] = homePosition[2];
+    nextCommandedPosition[3] = homePosition[3];
+    nextCommandedPosition[4] = homePosition[4];
 }
 
 void G281(double x_d,double y_d,double z_d,double a_d, double b_d, double *homePosition)
@@ -206,4 +239,14 @@ void G92(double x_d,double y_d,double z_d,double a_d, double b_d, double *actual
     actualPosition[2] = z_d;
     actualPosition[3] = a_d;
     actualPosition[4] = b_d;
+}
+
+void M92(double x_d,double y_d,double z_d,double a_d, double b_d)
+{
+	stepsPerMM[0] = x_d;
+	stepsPerMM[1] = y_d;
+	stepsPerMM[2] = z_d;
+	stepsPerMM[3] = a_d;
+	stepsPerMM[4] = b_d;
+
 }

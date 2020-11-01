@@ -17,7 +17,6 @@ C_SRCS += \
 ../src/spi.c \
 ../src/syscalls.c \
 ../src/system_stm32f0xx.c \
-../src/timers.c \
 ../src/usart.c 
 
 OBJS += \
@@ -32,7 +31,6 @@ OBJS += \
 ./src/spi.o \
 ./src/syscalls.o \
 ./src/system_stm32f0xx.o \
-./src/timers.o \
 ./src/usart.o 
 
 C_DEPS += \
@@ -46,7 +44,6 @@ C_DEPS += \
 ./src/spi.d \
 ./src/syscalls.d \
 ./src/system_stm32f0xx.d \
-./src/timers.d \
 ./src/usart.d 
 
 

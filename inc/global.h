@@ -12,12 +12,15 @@ typedef int bool;
 double actualPosition[5];
 double commandedPosition[5];
 double homePosition[5];
+double nextCommandedPosition[5];
 
 int RELATIVE;
 int ABSOLUTE;
 
-//SD Card Variables
+bool startBendCycleFlag;
 
+//SD Card Variables
+bool readNextLineFlag;
 
 //USART variables
 char messageRX[RXLENGTH];
@@ -37,9 +40,12 @@ double stepsPerMM[5];                   //Array of the number of steps per mm fo
 extern double actualPosition[5];
 extern double commandedPosition[5];
 extern double homePosition[5];
+extern double nextCommandedPosition[5];
 extern int RELATIVE;
 extern int ABSOLUTE;
 
+extern bool startBendCycleFlag;
+extern bool readNextLineFlag;
 
 extern char messageRX[RXLENGTH];
 extern char command[RXLENGTH];

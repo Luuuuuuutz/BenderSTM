@@ -29,6 +29,7 @@ src/main.o: ../src/main.c \
  C:/Users/eric/workspace/BenderSTM/inc/global.h \
  C:/Users/eric/workspace/BenderSTM/inc/usart.h \
  C:/Users/eric/workspace/BenderSTM/inc/global.h \
+ C:/Users/eric/workspace/BenderSTM/inc/motorSubsystemCalls.h \
  C:/Users/eric/workspace/BenderSTM/inc/spi.h \
  C:/Users/eric/workspace/BenderSTM/inc/ff.h \
  C:/Users/eric/workspace/BenderSTM/inc/ffconf.h \
@@ -96,6 +97,8 @@ C:/Users/eric/workspace/BenderSTM/inc/global.h:
 C:/Users/eric/workspace/BenderSTM/inc/usart.h:
 
 C:/Users/eric/workspace/BenderSTM/inc/global.h:
+
+C:/Users/eric/workspace/BenderSTM/inc/motorSubsystemCalls.h:
 
 C:/Users/eric/workspace/BenderSTM/inc/spi.h:
 
