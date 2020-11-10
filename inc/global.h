@@ -17,10 +17,13 @@ double nextCommandedPosition[5];
 int RELATIVE;
 int ABSOLUTE;
 
-bool startBendCycleFlag;
+bool initBendCycleFlag;
+bool startBendCycle;
+bool inBendCycle;
 
 //SD Card Variables
 bool readNextLineFlag;
+bool nextLineReady;
 
 //USART variables
 char messageRX[RXLENGTH];
@@ -44,8 +47,12 @@ extern double nextCommandedPosition[5];
 extern int RELATIVE;
 extern int ABSOLUTE;
 
-extern bool startBendCycleFlag;
+extern bool initBendCycleFlag;
+extern bool startBendCycle;
+extern bool inBendCycle;
+
 extern bool readNextLineFlag;
+extern bool nextLineReady;
 
 extern char messageRX[RXLENGTH];
 extern char command[RXLENGTH];

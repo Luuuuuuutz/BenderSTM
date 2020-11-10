@@ -14,14 +14,21 @@
 #define __GCODE_H
 
 
-//void openFile(FATFS &FatFs, FIL &Fil);
-//void readGCodeLine(FATFS*, FIL*);
+void openFile();
+bool readGCodeLine();
+void CheckGCodeLine(char*, bool);
+
 void G0(double x_d,double y_d,double z_d,double a_d, double b_d,double *commanded);
 void G1(double x_d,double y_d,double z_d,double a_d, double b_d, double* actual);
 void G28(double *home, double *commanded);
 void G281(double x_d,double y_d,double z_d,double a_d, double b_d, double *home);
-void mode(int mode);
+void G90(int mode);
+void G91(int mode);
 void G92(double x_d,double y_d,double z_d,double a_d, double b_d, double *actual);
+void M00(void);
+void M01(void);
+void M17(double x_d,double y_d,double z_d,double a_d, double b_d);
+void M18(double x_d,double y_d,double z_d,double a_d, double b_d);
 void M92(double x_d,double y_d,double z_d,double a_d, double b_d);
 
 

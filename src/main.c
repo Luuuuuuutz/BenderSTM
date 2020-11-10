@@ -24,29 +24,40 @@
 
 int main(void)
 {
-	startBendCycleFlag = true;
-	bool isEndLine;
+	initBendCycleFlag = false;
+	startBendCycle = false;
+	inBendCycle = false;
 
-    //usart1Init(115200);         //Enable USART1 at 115200 baud
-    //softwareTimerInit();        //Start the timer to send data over USART
+	bool isEndLine;
 
     setupTimer3();
     setupGPIO();
 
-    //TEST CODE MAIN BLA BLA
-
     actualPosition[0] = 0.000;
-    actualPosition[1] = 0.000;
-    actualPosition[2] = 0.000;
-    actualPosition[3] = 0.000;
-    actualPosition[4] = 0.000;
+    actualPosition[1] = 1.000;
+    actualPosition[2] = 2.000;
+    actualPosition[3] = 3.000;
+    actualPosition[4] = 4.000;
+
+    commandedPosition[0] = 0.000;
+    commandedPosition[2] = 1000.0;
+
+    stepsPerMM[0] = 50;
+    stepsPerMM[2] = 50;
+
+    setupMotor();
+
+    //usart1Init(9600);         //Enable USART1 at 115200 baud
+    //softwareTimerInit();        //Start the timer to send data over USART
 
     while(1)
     {
-
-    	if (startBendCycleFlag == true)
+    	if (initBendCycleFlag == true)
     	{
-    		startBendCycleFlag = false;
+    		initBendCycleFlag = false;
+
+    		inBendCycle = true;
+
     		//First open the file
     	    openFile();
     	    isEndLine = readGCodeLine();	//Then read the first line to begin the process
@@ -56,28 +67,52 @@ int main(void)
 
     	}
 
-    	if (readNextLineFlag == true)
+    	if ((readNextLineFlag == true) && inBendCycle)
     	{
     		readNextLineFlag = false;
     		isEndLine = readGCodeLine();
+    		if (isEndLine)
+    		{
+    			inBendCycle = false;
+    			break;
+    		}
     	}
 
-    	if (zFlag == true)
+    	if ((zFlag == true) && inBendCycle)
     	{
     		zFlag = false;
 
-    		while(isLineReady == true)
+    		isEndLine = readGCodeLine();
+
+    		if (isEndLine)
     		{
-    		commandedPosition[0] = nextCommandedPosition[0];
-    		commandedPosition[1] = nextCommandedPosition[1];
-    		commandedPosition[2] = nextCommandedPosition[2];
-    		commandedPosition[3] = nextCommandedPosition[3];
-    		commandedPosition[4] = nextCommandedPosition[4];
+    			inBendCycle = false;
+    			break;
     		}
 
+    		/*
+    		int timeout = 0;
 
-    		//First read the next line of G-Code then call the motor subsystem
+
+    		while(nextLineReady == false)
+    		{
+    			timeout++;
+				if (timeout > 10000)
+				{
+					break;
+				}
+    		}
+
+			commandedPosition[0] = nextCommandedPosition[0];
+			commandedPosition[1] = nextCommandedPosition[1];
+			commandedPosition[2] = nextCommandedPosition[2];
+			commandedPosition[3] = nextCommandedPosition[3];
+			commandedPosition[4] = nextCommandedPosition[4];
+
+
+    		//Read the next line of G-Code then call the motor subsystem
     		isEndLine = readGCodeLine();
+    		*/
 
     	}
 
@@ -86,7 +121,7 @@ int main(void)
             rxFlag = false; //Reset the flag
             //Do work
             //Call Vidya's function to interpret G Code
-            CheckGCodeLine(messageRX);
+            CheckGCodeLine(messageRX, false);
         }
 
         if (txFlag == true)

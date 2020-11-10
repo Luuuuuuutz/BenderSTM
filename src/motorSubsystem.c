@@ -32,7 +32,7 @@ void setupTimer3()
 {
     // Enable timer 3 here.
     // Make it generate an interrupt 2000 times per second.
-    // Set the prescaler to 48 - 1 so that the free-running
+    // Set the prescaler to 48 - 1 to divide 48MHz clock by 48
     // counter goes from 0 ... 499
     // Possibly change to another timer.
     RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
@@ -193,6 +193,34 @@ void setupGPIO()                                                               /
 */
 }
 
+void enableSteppers(bool x, bool y, bool z, bool a, bool b)
+{
+	if (x)
+		GPIOA->BRR |= (1<<X_EN);                            	//Enables X driver
+	if (y)
+		GPIOA->BRR |= (1<<Y_EN);                              	//Enables Y driver
+	if (z)
+		GPIOC->BRR |= (1<<Z_EN);                              	//Enables Z driver
+	if (a)
+		GPIOB->BRR |= (1<<A_EN);                             	//Enables A driver
+    if (b)
+    	GPIOB->BRR |= (1<<B_EN);                              	//Enables B driver
+}
+
+void disableSteppers(bool x, bool y, bool z, bool a, bool b)
+{
+	if (x)
+		GPIOA->BSRR |= (1<<X_EN);                            	//Disables X driver
+	if (y)
+		GPIOA->BSRR |= (1<<Y_EN);                              	//Disables Y driver
+	if (z)
+		GPIOC->BSRR |= (1<<Z_EN);                              	//Disables Z driver
+	if (a)
+		GPIOB->BSRR |= (1<<A_EN);                             	//Disables A driver
+    if (b)
+    	GPIOB->BSRR |= (1<<B_EN);                              	//Disables B driver
+}
+
 void setupMotor(void)            //possibly change
 {
     //First disable the timer so it doesn't trigger while setting up the motor
@@ -217,12 +245,8 @@ void setupMotor(void)            //possibly change
     steps[3] = 0;
     steps[4] = 0;
 
-    GPIOA->BRR |= (1<<X_EN);                            	//Enables X driver
-    GPIOA->BRR |= (1<<Y_EN);                              	//Enables Y driver
-    GPIOC->BRR |= (1<<Z_EN);                              	//Enables Z driver
-    GPIOB->BRR |= (1<<A_EN);                             	//Enables A driver
-    GPIOB->BRR |= (1<<B_EN);                              	//Enables B driver
 
+    //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     if(actualPosition[0] > commandedPosition[0])        //Checks direction, move backwards
     {
         GPIOA->BSRR |= (1<<X_DIR);                         //Should set BS11 to 1 for X-DIR
@@ -233,6 +257,7 @@ void setupMotor(void)            //possibly change
         GPIOA->BRR |= (1<<X_DIR);
     }
 
+    //YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
     if(actualPosition[1] > commandedPosition[1])
     {
         GPIOA->BSRR |= (1<<Y_DIR);                          //Should set BS8 to 1 for Y-DIR
@@ -243,16 +268,18 @@ void setupMotor(void)            //possibly change
         GPIOA->BRR |= (1<<Y_DIR);
     }
 
+    //ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
     if(actualPosition[2] > commandedPosition[2])
     {
-        GPIOC->BSRR |= (1<<Z_DIR);                          //Should set BS7 to 1 for Z-DIR
+        GPIOC->BRR |= (1<<Z_DIR);                          //Should set BS7 to 1 for Z-DIR
         updateMovement[2] = -updateMovement[2];
     }
     else                                                //Move forwards
     {
-        GPIOC->BRR |= (1<<Z_DIR);
+        GPIOC->BSRR |= (1<<Z_DIR);
     }
 
+    //AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
     if(actualPosition[3] > commandedPosition[3])
     {
         GPIOB->BSRR |= (1<<A_DIR);                         //Should set BS10 to 1 for A-DIR
@@ -263,6 +290,7 @@ void setupMotor(void)            //possibly change
         GPIOB->BRR |= (1<<A_DIR);
     }
 
+    //BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
     if(actualPosition[4] > commandedPosition[4])
     {
         GPIOB->BSRR |= (1<<B_DIR);                          //Should set BS0 to 1 for B-DIR
@@ -324,11 +352,11 @@ void advanceMotor(void)                                             //check on h
         GPIOC->ODR ^= (~bitcheck ^ (GPIOC->ODR >> Z_PLS)) & (1 << Z_PLS);                       //Should check if the bitvalue for z-pulse is either a 1 or 0 and flips it.
         //Two lines above came from Vitorbnc via https://gist.github.com/Vitorbnc/e35f1ff1485d660edf365241dacfa387
 
-        if(steps[2] >= (2 * moveZ))                                             //Checks if zFlag is reached. If reached, sets zFlag so next line of G-Code can be called.
-        {
-            zFlag = true;                                                       //CHECK, MIGHT MOVE STEPS[] = 0 HERE
-        }
+    }
 
+    if(steps[2] >= (2 * moveZ))                                             //Checks if zFlag is reached. If reached, sets zFlag so next line of G-Code can be called.
+    {
+        zFlag = true;                                                       //CHECK, MIGHT MOVE STEPS[] = 0 HERE
     }
 
     if(steps[3] < (2 * moveA))                                                          //Checks if actualA is different than commandedA

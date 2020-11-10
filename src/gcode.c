@@ -14,7 +14,7 @@ char Z[10];
 char A[10];
 char B[10];
 
-int setupmotor_flag = 0;
+int firstTime = 0;
 
 void openFile()
 {
@@ -54,15 +54,18 @@ bool readGCodeLine()
     else
     {
         f_gets(line, btr, &Fil);
-        CheckGCodeLine(line);
+        CheckGCodeLine(line, true);
     	return false;
     }
 }
 
 //Functions
 
-void CheckGCodeLine(char* line)
+void CheckGCodeLine(char* line, bool source)
 {
+
+	//Source boolean - True if function comes from SD Card, false if UART
+
 	char* data_ptr;
     char* eptrX;
     char* eptrY;
@@ -127,113 +130,195 @@ void CheckGCodeLine(char* line)
     if(strncmp(line,"G0",2) == 0)
     {
        G0(x_d,y_d,z_d,a_d,b_d,nextCommandedPosition);
-       readNextLineFlag = true;
+
     }
 
     else if((strncmp(line,"G01",3) == 0) || (strncmp(line,"G1",2) == 0))
     {
         G1(x_d,y_d,z_d,a_d,b_d,nextCommandedPosition);
 
-        setupMotor();
+    }
 
-        //setupmotor_flag++;
-        //if(setupmotor_flag == 1)
-        //{
-        //	setupMotor();
-        //}
+    else if(strncmp(line,"G20",3) == 0)
+    {
+       if (source)
+    	   readNextLineFlag = true;
+    }
+
+    else if(strncmp(line,"G21",3) == 0)
+    {
+       if (source)
+    	   readNextLineFlag = true;
     }
 
     else if(strncmp(line,"G28",3) == 0)
     {
         G28(homePosition, nextCommandedPosition);
 
-        setupMotor();
     }
 
     else if(strncmp(line,"G28.1",5) == 0)
     {
        G281(x_d,y_d,z_d,a_d,b_d,homePosition);
-       readNextLineFlag = true;
+       if (source)
+    	   readNextLineFlag = true;
+    }
+
+    else if(strncmp(line,"G90",3) == 0)
+    {
+        G90(ABSOLUTE);
+        if (source)
+     	   readNextLineFlag = true;
+    }
+
+    else if(strncmp(line,"G91",3) == 0)
+    {
+        G91(RELATIVE);
+        if (source)
+     	   readNextLineFlag = true;
     }
 
     else if(strncmp(line,"G92",3) == 0)
     {
        G92(x_d,y_d,z_d,a_d,b_d,actualPosition);
-       readNextLineFlag = true;
+       if (source)
+    	   readNextLineFlag = true;
     }
 
-    else if(strncmp(line,"G90",3) == 0)
+    else if(strncmp(line,"M00",3) == 0)
     {
-        mode(ABSOLUTE);
-        readNextLineFlag = true;
+    	M00();
+        if (source)
+     	   readNextLineFlag = true;
     }
 
-    else if(strncmp(line,"G91",3) == 0)
+    else if(strncmp(line,"M01",3) == 0)
     {
-        mode(RELATIVE);
-        readNextLineFlag = true;
+    	M01();
+        if (source)
+     	   readNextLineFlag = true;
+    }
+
+    else if(strncmp(line,"M17",3) == 0)
+    {
+    	M17(x_d, y_d, z_d, a_d, b_d);
+        if (source)
+     	   readNextLineFlag = true;
+    }
+
+    else if(strncmp(line,"M18",3) == 0)
+    {
+    	M18(x_d, y_d, z_d, a_d, b_d);
+        if (source)
+     	   readNextLineFlag = true;
     }
 
     else if(strncmp(line,"M92",3) == 0)
     {
     	M92(x_d, y_d, z_d, a_d, b_d);
-    	readNextLineFlag = true;
+        if (source)
+     	   readNextLineFlag = true;
+    }
+
+    else
+    {
+    	if (source)
+        readNextLineFlag = true;
     }
 
     memset(line,0,100);
     memset(G,0,10);
     memset(M,0,10);
 
-    //if (setupmotor_flag < 1)
-    //{
-    //	readNextLineFlag = true;
-    //}
-
 }
 
 void G0(double x_d,double y_d,double z_d,double a_d, double b_d, double *nextCommandedPosition)
 {
+	//Move Rapid
+
     nextCommandedPosition[0] = x_d;
     nextCommandedPosition[1] = y_d;
     nextCommandedPosition[2] = z_d;
     nextCommandedPosition[3] = a_d;
     nextCommandedPosition[4] = b_d;
+
+	commandedPosition[0] = nextCommandedPosition[0];
+	commandedPosition[1] = nextCommandedPosition[1];
+	commandedPosition[2] = nextCommandedPosition[2];
+	commandedPosition[3] = nextCommandedPosition[3];
+	commandedPosition[4] = nextCommandedPosition[4];
+
+    setupMotor();
 
 }
 
 void G1(double x_d,double y_d,double z_d,double a_d, double b_d, double *nextCommandedPosition)
 {
+	//Move Controlled
+
     nextCommandedPosition[0] = x_d;
     nextCommandedPosition[1] = y_d;
     nextCommandedPosition[2] = z_d;
     nextCommandedPosition[3] = a_d;
     nextCommandedPosition[4] = b_d;
+
+	commandedPosition[0] = nextCommandedPosition[0];
+	commandedPosition[1] = nextCommandedPosition[1];
+	commandedPosition[2] = nextCommandedPosition[2];
+	commandedPosition[3] = nextCommandedPosition[3];
+	commandedPosition[4] = nextCommandedPosition[4];
+
+    setupMotor();
 }
 
 void G28(double *homePosition, double *nextCommandedPosition)
 {
+	//Move to Home
+
     nextCommandedPosition[0] = homePosition[0];
     nextCommandedPosition[1] = homePosition[1];
     nextCommandedPosition[2] = homePosition[2];
     nextCommandedPosition[3] = homePosition[3];
     nextCommandedPosition[4] = homePosition[4];
+
+	commandedPosition[0] = nextCommandedPosition[0];
+	commandedPosition[1] = nextCommandedPosition[1];
+	commandedPosition[2] = nextCommandedPosition[2];
+	commandedPosition[3] = nextCommandedPosition[3];
+	commandedPosition[4] = nextCommandedPosition[4];
+
+    setupMotor();
 }
 
 void G281(double x_d,double y_d,double z_d,double a_d, double b_d, double *homePosition)
 {
+	//Set Home Position
+
     homePosition[0] = x_d;
     homePosition[1] = y_d;
     homePosition[2] = z_d;
     homePosition[3] = a_d;
     homePosition[4] = b_d;
 }
-void mode(int mode)
+
+void G90(int mode)
 {
+	//Absolute Mode
+
     mode = 1;
+}
+
+void G91(int mode)
+{
+	//Relative Mode
+
+    mode = 0;
 }
 
 void G92(double x_d,double y_d,double z_d,double a_d, double b_d, double *actualPosition)
 {
+	//Set Current Position
+
     actualPosition[0] = x_d;
     actualPosition[1] = y_d;
     actualPosition[2] = z_d;
@@ -241,8 +326,54 @@ void G92(double x_d,double y_d,double z_d,double a_d, double b_d, double *actual
     actualPosition[4] = b_d;
 }
 
+void M00()
+{
+	//Program Stop
+
+	inBendCycle = false;
+
+	TIM3->CR1 &= ~TIM_CR1_CEN;
+}
+
+void M01()
+{
+	//Program End
+
+	inBendCycle = false;
+
+	TIM3->CR1 &= ~TIM_CR1_CEN;
+}
+
+void M17(double x_d,double y_d,double z_d,double a_d, double b_d)
+{
+	//Enable Stepper Motors
+
+	bool x = (bool) x_d;
+	bool y = (bool) y_d;
+	bool z = (bool) z_d;
+	bool a = (bool) a_d;
+	bool b = (bool) b_d;
+
+	enableSteppers (x, y, z, a, b);
+}
+
+void M18(double x_d,double y_d,double z_d,double a_d, double b_d)
+{
+	//Disable Stepper Motors
+
+	bool x = (bool) x_d;
+	bool y = (bool) y_d;
+	bool z = (bool) z_d;
+	bool a = (bool) a_d;
+	bool b = (bool) b_d;
+
+	disableSteppers (x, y, z, a, b);
+}
+
 void M92(double x_d,double y_d,double z_d,double a_d, double b_d)
 {
+	//Set Steps per MM
+
 	stepsPerMM[0] = x_d;
 	stepsPerMM[1] = y_d;
 	stepsPerMM[2] = z_d;

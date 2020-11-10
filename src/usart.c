@@ -198,7 +198,7 @@ void usart1Send(const char *buffer)
     while(!(USART1->ISR & USART_ISR_TC))        //Wait for transmission complete
     {
         timeout++;
-        if(timeout > 1000)
+        if(timeout > 10000)
             return;
     }
 
@@ -228,7 +228,7 @@ void softwareTimerInit()
     RCC->APB1ENR |= RCC_APB1ENR_TIM14EN;     //ENABLE TIM14
 
     TIM14->PSC = 4800 - 1;
-    TIM14->ARR = 1000 - 1;       //50 interrupts per second (was 200)
+    TIM14->ARR = 2000 - 1;       //50 interrupts per second (was 200)
 
     TIM14->DIER = TIM_DIER_UIE;  //Enable the interrupt
 
