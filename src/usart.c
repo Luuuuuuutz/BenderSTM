@@ -51,7 +51,7 @@ void usart1Init(int baud)
 
 }
 
-void usart1DMAInit(char* memory)
+void usart1DMAInit()
 {
 
     RCC->AHBENR |= RCC_AHBENR_DMA1EN;

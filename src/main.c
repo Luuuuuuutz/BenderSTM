@@ -3,8 +3,8 @@
   * @file    main.c
   * @author  Ac6
   * @version V1.0
-  * @date    01-December-2013
-  * @brief   Default main function.
+  * @date    01-September-2020
+  * @brief   3D Bender main program
   ******************************************************************************
 */
 
@@ -40,15 +40,22 @@ int main(void)
     actualPosition[4] = 4.000;
 
     commandedPosition[0] = 0.000;
-    commandedPosition[2] = 1000.0;
+    commandedPosition[1] = 0.000;
+    commandedPosition[2] = 50.000;
+    commandedPosition[3] = 0.000;
+    commandedPosition[4] = 0.000;
 
-    stepsPerMM[0] = 50;
-    stepsPerMM[2] = 50;
+    stepsPerMM[0] = 500;
+    stepsPerMM[1] = 500;
+    stepsPerMM[2] = 100;
+    stepsPerMM[3] = 55.556;
+    stepsPerMM[4] = 55.556;
 
     setupMotor();
 
-    //usart1Init(9600);         //Enable USART1 at 115200 baud
-    //softwareTimerInit();        //Start the timer to send data over USART
+    usart1Init(115200);         //Enable USART1 at 115200 baud
+    usart1DMAInit();            //Initialize DMA for USART1
+    softwareTimerInit();        //Start the timer to send data over USART
 
     while(1)
     {
