@@ -16,7 +16,8 @@ char B[10];
 
 int firstTime = 0;
 
-void openFile()
+
+void openFile(char* fileName)
 {
 	FRESULT res;
 

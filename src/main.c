@@ -33,25 +33,29 @@ int main(void)
     setupTimer3();
     setupGPIO();
 
+/*
+
     actualPosition[0] = 0.000;
-    actualPosition[1] = 1.000;
-    actualPosition[2] = 2.000;
-    actualPosition[3] = 3.000;
-    actualPosition[4] = 4.000;
+    actualPosition[1] = 0.000;
+    actualPosition[2] = 0.000;
+    actualPosition[3] = 0.000;
+    actualPosition[4] = 0.000;
 
     commandedPosition[0] = 0.000;
     commandedPosition[1] = 0.000;
-    commandedPosition[2] = 50.000;
+    commandedPosition[2] = -200.000;
     commandedPosition[3] = 0.000;
     commandedPosition[4] = 0.000;
 
     stepsPerMM[0] = 500;
     stepsPerMM[1] = 500;
-    stepsPerMM[2] = 100;
+    stepsPerMM[2] = 200;
     stepsPerMM[3] = 55.556;
     stepsPerMM[4] = 55.556;
 
     setupMotor();
+
+*/
 
     usart1Init(115200);         //Enable USART1 at 115200 baud
     usart1DMAInit();            //Initialize DMA for USART1

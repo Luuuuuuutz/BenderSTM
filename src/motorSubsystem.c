@@ -316,7 +316,7 @@ void TIM3_IRQHandler(void)
 
 void advanceMotor(void)                                             //check on how to pass arrays, might need to include zFlag
 {
-    if(steps[0] < (2 * moveX))                                                          //Checks if actualX is different than commandedX
+    if(steps[0] < (2*moveX))                                                          //Checks if actualX is different than commandedX
     {
         steps[0]++;
         actualPosition[0] = actualPosition[0] + updateMovement[0];                  //Updates actualPosition[0]
@@ -331,7 +331,7 @@ void advanceMotor(void)                                             //check on h
         //possibly change above line to if-statement
     }
 
-    if(steps[1] < (2 * moveY))                                                          //Checks if actualY is different than commandedY
+    if(steps[1] < (2*moveY))                                                          //Checks if actualY is different than commandedY
     {
         steps[1]++;
         actualPosition[1] = actualPosition[1] + updateMovement[1];                  //Updates actualPosition[1]
@@ -342,7 +342,7 @@ void advanceMotor(void)                                             //check on h
         //Two lines above came from Vitorbnc via https://gist.github.com/Vitorbnc/e35f1ff1485d660edf365241dacfa387
     }
 
-    if(steps[2] < (2 * moveZ))                                                          //Checks if actualZ is different than commandedZ
+    if(steps[2] < (2*moveZ))                                                          //Checks if actualZ is different than commandedZ
     {
         steps[2]++;
         actualPosition[2] = actualPosition[2] + updateMovement[2];                  //Updates actualPosition[2]
@@ -354,12 +354,13 @@ void advanceMotor(void)                                             //check on h
 
     }
 
-    if(steps[2] >= (2 * moveZ))                                             //Checks if zFlag is reached. If reached, sets zFlag so next line of G-Code can be called.
+    if(steps[2] >= (2*moveZ))                                             //Checks if zFlag is reached. If reached, sets zFlag so next line of G-Code can be called.
     {
         zFlag = true;                                                       //CHECK, MIGHT MOVE STEPS[] = 0 HERE
+        TIM3->CR1 &= ~TIM_CR1_CEN;
     }
 
-    if(steps[3] < (2 * moveA))                                                          //Checks if actualA is different than commandedA
+    if(steps[3] < (2*moveA))                                                          //Checks if actualA is different than commandedA
     {
         steps[3]++;
         actualPosition[3] = actualPosition[3] + updateMovement[3];                               //Updates actualPosition[3]
@@ -370,7 +371,7 @@ void advanceMotor(void)                                             //check on h
         //Two lines above came from Vitorbnc via https://gist.github.com/Vitorbnc/e35f1ff1485d660edf365241dacfa387
     }
 
-    if(steps[4] < (2 * moveB))                                                          //Checks if actualB is different than commandedB
+    if(steps[4] < (2*moveB))                                                          //Checks if actualB is different than commandedB
     {
         steps[4]++;
         actualPosition[4] = actualPosition[4] + updateMovement[4];                               //Updates actualPosition[4]
