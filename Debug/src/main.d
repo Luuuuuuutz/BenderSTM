@@ -34,9 +34,7 @@ src/main.o: ../src/main.c \
  C:/Users/eric/workspace/BenderSTM/inc/ff.h \
  C:/Users/eric/workspace/BenderSTM/inc/ffconf.h \
  C:/Users/eric/workspace/BenderSTM/inc/fat16.h \
- C:/Users/eric/workspace/BenderSTM/inc/gcode.h \
- C:/Users/eric/workspace/BenderSTM/inc/ff.h \
- C:/Users/eric/workspace/BenderSTM/inc/fat16.h
+ C:/Users/eric/workspace/BenderSTM/inc/gcode.h
 
 C:/Users/eric/workspace/BenderSTM/CMSIS/device/stm32f0xx.h:
 
@@ -109,7 +107,3 @@ C:/Users/eric/workspace/BenderSTM/inc/ffconf.h:
 C:/Users/eric/workspace/BenderSTM/inc/fat16.h:
 
 C:/Users/eric/workspace/BenderSTM/inc/gcode.h:
-
-C:/Users/eric/workspace/BenderSTM/inc/ff.h:
-
-C:/Users/eric/workspace/BenderSTM/inc/fat16.h:

@@ -12,17 +12,22 @@
 #include <math.h>
 #include <stdint.h>
 #include "motorSubsystemCalls.h"
-#include "global.h"
 
 //Global Variables:
-double moveX;           	//Difference in x to move in steps
-double moveY;           	//Difference in y to move in steps
-double moveZ;           	//Difference in z to move in steps
-double moveA;           	//Difference in a to move in steps
-double moveB;          	 	//Difference in b to move in steps
-int steps[5];           	//Array of number of current steps moved for each position
+int moveX;           	//Difference in x to move in steps
+int moveY;           	//Difference in y to move in steps
+int moveZ;           	//Difference in z to move in steps
+int moveA;           	//Difference in a to move in steps
+int moveB;          	//Difference in b to move in steps
+int steps[5];           //Array of number of current steps moved for each position
 double updateMovement[5];   //Value of one step to update
+bool progSource = 1;    //1 if source is SD card, 0 if serial
 
+bool xReachedPos = 0;
+bool yReachedPos = 0;
+bool zReachedPos = 0;
+bool aReachedPos = 0;
+bool bReachedPos = 0;
 
 // Enable clock to timer3. Using timer3 because of general purpose usage.
 // Setup prescalar and arr so that the interrupt is triggered every 500 us.
@@ -118,79 +123,6 @@ void setupGPIO()                                                               /
     GPIOB->MODER &= ~(3<<(2*B_EN));
     GPIOB->MODER |= (1<<(2*B_EN));
 
-
-    /*
-    //set PA10 to push/pull (X-Pls)
-    GPIOA->OTYPER &= ~(3<<(2*10));                                                          //Clears PA10 bit
-    //PA11; X-DIR
-    GPIOA->OTYPER &= ~(3<<(2*11));
-    //PA12; X-EN
-    GPIOA->OTYPER &= ~(3<<(2*12));
-
-    //set PC9 to output (Y-Pls)
-    GPIOC->OTYPER &= ~(3<<(2*9));
-    //PA8; Y-DIR
-    GPIOA->OTYPER &= ~(3<<(2*8));
-    //PA9; Y-EN
-    GPIOA->OTYPER &= ~(3<<(2*9));
-
-    //set PC6 to output (Z-Pls)
-    GPIOC->OTYPER &= ~(3<<(2*6));
-    //PC7; Z-DIR
-    GPIOC->OTYPER &= ~(3<<(2*7));
-    //PC8; Z-EN
-    GPIOC->OTYPER &= ~(3<<(2*8));
-
-    //set PB2 to output (A-Pls)
-    GPIOB->OTYPER &= ~(3<<(2*2));
-    //PB10; A-DIR
-    GPIOB->OTYPER &= ~(3<<(2*10));
-    //PB11; A-EN
-    GPIOB->OTYPER &= ~(3<<(2*11));
-
-    //set PC5 to output (B-Pls)
-    GPIOC->OTYPER &= ~(3<<(2*5));
-    //PB0; B-DIR
-    GPIOB->OTYPER &= ~(3<<(2*0));
-    //PB1; B-EN
-    GPIOB->OTYPER &= ~(3<<(2*1));
-
-    //set PA10 to pull-up/pull-down (X-Pls)
-    GPIOA->PUPDR &= ~(3<<(2*10));                                               //Clears PA10 bit
-    //PA11; X-DIR
-    GPIOA->PUPDR &= ~(3<<(2*11));
-    //PA12; X-EN
-    GPIOA->PUPDR &= ~(3<<(2*12));
-
-    //set PC9 to output (Y-Pls)
-    GPIOC->PUPDR &= ~(3<<(2*9));
-    //PA8; Y-DIR
-    GPIOA->PUPDR &= ~(3<<(2*8));
-    //PA9; Y-EN
-    GPIOA->PUPDR &= ~(3<<(2*9));
-
-    //set PC6 to output (Z-Pls)
-    GPIOC->PUPDR &= ~(3<<(2*6));
-    //PC7; Z-DIR
-    GPIOC->PUPDR &= ~(3<<(2*7));
-    //PC8; Z-EN
-    GPIOC->PUPDR &= ~(3<<(2*8));
-
-    //set PB2 to output (A-Pls)
-    GPIOB->PUPDR &= ~(3<<(2*2));
-    //PB10; A-DIR
-    GPIOB->PUPDR &= ~(3<<(2*10));
-    //PB11; A-EN
-    GPIOB->PUPDR &= ~(3<<(2*11));
-
-    //set PC5 to output (B-Pls)
-    GPIOC->PUPDR &= ~(3<<(2*5));
-    //PB0; B-DIR
-    GPIOB->PUPDR &= ~(3<<(2*0));
-    //PB1; B-EN
-    GPIOB->PUPDR &= ~(3<<(2*1));
-
-*/
 }
 
 void enableSteppers(bool x, bool y, bool z, bool a, bool b)
@@ -221,17 +153,25 @@ void disableSteppers(bool x, bool y, bool z, bool a, bool b)
     	GPIOB->BSRR |= (1<<B_EN);                              	//Disables B driver
 }
 
-void setupMotor(void)            //possibly change
+void setupMotor(bool source)
 {
     //First disable the timer so it doesn't trigger while setting up the motor
 	TIM3->CR1 &= ~TIM_CR1_CEN;
 
+	progSource = source;
+
+	xReachedPos = 0;    //Reset the position reached bools
+	yReachedPos = 0;
+	zReachedPos = 0;
+	aReachedPos = 0;
+	bReachedPos = 0;
+
 	//Compute the distance to move in steps
-	moveX = (fabs(actualPosition[0] - commandedPosition[0])) * stepsPerMM[0];
-    moveY = (fabs(actualPosition[1] - commandedPosition[1])) * stepsPerMM[1];
-    moveZ = (fabs(actualPosition[2] - commandedPosition[2])) * stepsPerMM[2];
-    moveA = (fabs(actualPosition[3] - commandedPosition[3])) * stepsPerMM[3];
-    moveB = (fabs(actualPosition[4] - commandedPosition[4])) * stepsPerMM[4];
+	moveX = (int)round(fabs((actualPosition[0] - commandedPosition[0]) * stepsPerMM[0]));
+    moveY = (int)round(fabs((actualPosition[1] - commandedPosition[1]) * stepsPerMM[1]));
+    moveZ = (int)round(fabs((actualPosition[2] - commandedPosition[2]) * stepsPerMM[2]));
+    moveA = (int)round(fabs((actualPosition[3] - commandedPosition[3]) * stepsPerMM[3]));
+    moveB = (int)round(fabs((actualPosition[4] - commandedPosition[4]) * stepsPerMM[4]));
 
     updateMovement[0] = 0.5 / stepsPerMM[0];
     updateMovement[1] = 0.5 / stepsPerMM[1];
@@ -327,8 +267,11 @@ void advanceMotor(void)                                             //check on h
         //Two lines above came from Vitorbnc via https://gist.github.com/Vitorbnc/e35f1ff1485d660edf365241dacfa387
 
                                                                                 //MENTION IN DESIGN DOC ALGORITHM!!
+    }
 
-        //possibly change above line to if-statement
+    if(steps[0] >= (2*moveX))
+    {
+        xReachedPos = 1;
     }
 
     if(steps[1] < (2*moveY))                                                          //Checks if actualY is different than commandedY
@@ -340,6 +283,11 @@ void advanceMotor(void)                                             //check on h
         bitcheck = (GPIOC->ODR >> Y_PLS) & 1;                                               //Finds the value of the y-pulse bit.
         GPIOC->ODR ^= (~bitcheck ^ (GPIOC->ODR >> Y_PLS)) & (1 << Y_PLS);               //Should check if the bitvalue for y-pulse is either a 1 or 0 and flips it.
         //Two lines above came from Vitorbnc via https://gist.github.com/Vitorbnc/e35f1ff1485d660edf365241dacfa387
+    }
+
+    if(steps[1] >= (2*moveY))
+    {
+        yReachedPos = 1;
     }
 
     if(steps[2] < (2*moveZ))                                                          //Checks if actualZ is different than commandedZ
@@ -356,8 +304,14 @@ void advanceMotor(void)                                             //check on h
 
     if(steps[2] >= (2*moveZ))                                             //Checks if zFlag is reached. If reached, sets zFlag so next line of G-Code can be called.
     {
-        zFlag = true;                                                       //CHECK, MIGHT MOVE STEPS[] = 0 HERE
-        TIM3->CR1 &= ~TIM_CR1_CEN;
+        zReachedPos = 1;
+
+        if (progSource) //Only set the z flag if the source is the SD card
+        {
+            zFlag = true;                                                       //CHECK, MIGHT MOVE STEPS[] = 0 HERE
+            TIM3->CR1 &= ~TIM_CR1_CEN;
+        }
+
     }
 
     if(steps[3] < (2*moveA))                                                          //Checks if actualA is different than commandedA
@@ -371,6 +325,11 @@ void advanceMotor(void)                                             //check on h
         //Two lines above came from Vitorbnc via https://gist.github.com/Vitorbnc/e35f1ff1485d660edf365241dacfa387
     }
 
+    if(steps[3] >= (2*moveA))
+    {
+        aReachedPos = 1;
+    }
+
     if(steps[4] < (2*moveB))                                                          //Checks if actualB is different than commandedB
     {
         steps[4]++;
@@ -380,6 +339,16 @@ void advanceMotor(void)                                             //check on h
         bitcheck = (GPIOC->ODR >> B_PLS) & 1;                                               //Finds the value of the x-pulse bit.
         GPIOC->ODR ^= (~bitcheck ^ (GPIOC->ODR >> B_PLS)) & (1 << B_PLS);               //Should check if the bitvalue for x-pulse is either a 1 or 0 and flips it.
         //Two lines above came from Vitorbnc via https://gist.github.com/Vitorbnc/e35f1ff1485d660edf365241dacfa387
+    }
+
+    if(steps[4] >= (2*moveB))
+    {
+        bReachedPos = 1;
+    }
+
+    if (xReachedPos & yReachedPos & zReachedPos & aReachedPos & bReachedPos)
+    {
+        TIM3->CR1 &= ~TIM_CR1_CEN;  //If all axes have reached position then turn off the timer
     }
 }
 

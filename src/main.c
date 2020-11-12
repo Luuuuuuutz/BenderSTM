@@ -33,7 +33,11 @@ int main(void)
     setupTimer3();
     setupGPIO();
 
-/*
+    usart1Init(115200);         //Enable USART1 at 115200 baud
+    usart1DMAInit();            //Initialize DMA for USART1
+    softwareTimerInit();        //Start the timer to send data over USART
+
+
 
     actualPosition[0] = 0.000;
     actualPosition[1] = 0.000;
@@ -41,11 +45,11 @@ int main(void)
     actualPosition[3] = 0.000;
     actualPosition[4] = 0.000;
 
-    commandedPosition[0] = 0.000;
-    commandedPosition[1] = 0.000;
-    commandedPosition[2] = -200.000;
-    commandedPosition[3] = 0.000;
-    commandedPosition[4] = 0.000;
+    commandedPosition[0] = 30.000;
+    commandedPosition[1] = -35.000;
+    commandedPosition[2] = 80.000;
+    commandedPosition[3] = 45.000;
+    commandedPosition[4] = -30.000;
 
     stepsPerMM[0] = 500;
     stepsPerMM[1] = 500;
@@ -53,13 +57,9 @@ int main(void)
     stepsPerMM[3] = 55.556;
     stepsPerMM[4] = 55.556;
 
-    setupMotor();
+    setupMotor(false);
 
-*/
 
-    usart1Init(115200);         //Enable USART1 at 115200 baud
-    usart1DMAInit();            //Initialize DMA for USART1
-    softwareTimerInit();        //Start the timer to send data over USART
 
     while(1)
     {
@@ -132,7 +132,7 @@ int main(void)
             rxFlag = false; //Reset the flag
             //Do work
             //Call Vidya's function to interpret G Code
-            CheckGCodeLine(messageRX, false);
+            CheckGCodeLine(command, false);
         }
 
         if (txFlag == true)
@@ -142,39 +142,39 @@ int main(void)
 
             //Actual positions
             int actualXWhole = (int) actualPosition[0];
-            int actualXDec = (actualPosition[0] - actualXWhole) * 100;
+            int actualXDec = (int) fabs((actualPosition[0] - actualXWhole) * 1000);
 
             int actualYWhole = (int) actualPosition[1];
-            int actualYDec = (actualPosition[1] - actualYWhole) * 100;
+            int actualYDec = (int) fabs((actualPosition[1] - actualYWhole) * 1000);
 
             int actualZWhole = (int) actualPosition[2];
-            int actualZDec = (actualPosition[2] - actualZWhole) * 100;
+            int actualZDec = (int) fabs((actualPosition[2] - actualZWhole) * 1000);
 
             int actualAWhole = (int) actualPosition[3];
-            int actualADec = (actualPosition[3] - actualAWhole) * 100;
+            int actualADec = (int) fabs((actualPosition[3] - actualAWhole) * 1000);
 
             int actualBWhole = (int) actualPosition[4];
-            int actualBDec = (actualPosition[4] - actualBWhole) * 100;
+            int actualBDec = (int) fabs((actualPosition[4] - actualBWhole) * 1000);
 
             //Commanded positions
             int commandedXWhole = (int) commandedPosition[0];
-            int commandedXDec = (commandedPosition[0] - commandedXWhole) * 100;
+            int commandedXDec = (int) fabs((commandedPosition[0] - commandedXWhole) * 1000);
 
             int commandedYWhole = (int) commandedPosition[1];
-            int commandedYDec = (commandedPosition[1] - commandedYWhole) * 100;
+            int commandedYDec = (int) fabs((commandedPosition[1] - commandedYWhole) * 1000);
 
             int commandedZWhole = (int) commandedPosition[2];
-            int commandedZDec = (commandedPosition[2] - commandedZWhole) * 100;
+            int commandedZDec = (int) fabs((commandedPosition[2] - commandedZWhole) * 1000);
 
             int commandedAWhole = (int) commandedPosition[3];
-            int commandedADec = (commandedPosition[3] - commandedAWhole) * 100;
+            int commandedADec = (int) fabs((commandedPosition[3] - commandedAWhole) * 1000);
 
             int commandedBWhole = (int) commandedPosition[4];
-            int commandedBDec = (commandedPosition[4] - commandedBWhole) * 100;
+            int commandedBDec = (int) fabs((commandedPosition[4] - commandedBWhole) * 1000);
 
             char dataPacket[240];
 
-            sprintf(dataPacket, "%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d;%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d,%3d.%03d\n",
+            sprintf(dataPacket, "%d.%03d,%d.%03d,%d.%03d,%d.%03d,%d.%03d;%d.%03d,%d.%03d,%d.%03d,%d.%03d,%d.%03d\n",
                     actualXWhole, actualXDec, actualYWhole, actualYDec, actualZWhole, actualZDec, actualAWhole, actualADec,
                     actualBWhole, actualBDec,commandedXWhole, commandedXDec, commandedYWhole, commandedYDec, commandedZWhole,
                     commandedZDec, commandedAWhole, commandedADec, commandedBWhole, commandedBDec);

@@ -1,9 +1,15 @@
-#include "gcode.h"
-#include "sd.h"
+#include "stm32f0xx.h"
+#include "stm32f0_discovery.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 
-#include "spi.h"
+#include "gcode.h"
 #include "ff.h"
 #include "fat16.h"
+#include "sd.h"
+#include "spi.h"
 
 FATFS FatFs;
 FIL Fil;
@@ -130,13 +136,13 @@ void CheckGCodeLine(char* line, bool source)
 
     if(strncmp(line,"G0",2) == 0)
     {
-       G0(x_d,y_d,z_d,a_d,b_d,nextCommandedPosition);
+       G0(x_d, y_d, z_d, a_d, b_d, source);
 
     }
 
     else if((strncmp(line,"G01",3) == 0) || (strncmp(line,"G1",2) == 0))
     {
-        G1(x_d,y_d,z_d,a_d,b_d,nextCommandedPosition);
+        G1(x_d, y_d, z_d, a_d, b_d, source);
 
     }
 
@@ -154,7 +160,7 @@ void CheckGCodeLine(char* line, bool source)
 
     else if(strncmp(line,"G28",3) == 0)
     {
-        G28(homePosition, nextCommandedPosition);
+        G28(homePosition, source);
 
     }
 
@@ -233,62 +239,44 @@ void CheckGCodeLine(char* line, bool source)
 
 }
 
-void G0(double x_d,double y_d,double z_d,double a_d, double b_d, double *nextCommandedPosition)
+void G0(double x_d,double y_d,double z_d,double a_d, double b_d, bool source)
 {
 	//Move Rapid
 
-    nextCommandedPosition[0] = x_d;
-    nextCommandedPosition[1] = y_d;
-    nextCommandedPosition[2] = z_d;
-    nextCommandedPosition[3] = a_d;
-    nextCommandedPosition[4] = b_d;
+	commandedPosition[0] = x_d;
+	commandedPosition[1] = y_d;
+	commandedPosition[2] = z_d;
+	commandedPosition[3] = a_d;
+	commandedPosition[4] = b_d;
 
-	commandedPosition[0] = nextCommandedPosition[0];
-	commandedPosition[1] = nextCommandedPosition[1];
-	commandedPosition[2] = nextCommandedPosition[2];
-	commandedPosition[3] = nextCommandedPosition[3];
-	commandedPosition[4] = nextCommandedPosition[4];
-
-    setupMotor();
+    setupMotor(source);
 
 }
 
-void G1(double x_d,double y_d,double z_d,double a_d, double b_d, double *nextCommandedPosition)
+void G1(double x_d, double y_d, double z_d, double a_d, double b_d, bool source)
 {
 	//Move Controlled
 
-    nextCommandedPosition[0] = x_d;
-    nextCommandedPosition[1] = y_d;
-    nextCommandedPosition[2] = z_d;
-    nextCommandedPosition[3] = a_d;
-    nextCommandedPosition[4] = b_d;
+	commandedPosition[0] = x_d;
+	commandedPosition[1] = y_d;
+	commandedPosition[2] = z_d;
+	commandedPosition[3] = a_d;
+	commandedPosition[4] = b_d;
 
-	commandedPosition[0] = nextCommandedPosition[0];
-	commandedPosition[1] = nextCommandedPosition[1];
-	commandedPosition[2] = nextCommandedPosition[2];
-	commandedPosition[3] = nextCommandedPosition[3];
-	commandedPosition[4] = nextCommandedPosition[4];
-
-    setupMotor();
+    setupMotor(source);
 }
 
-void G28(double *homePosition, double *nextCommandedPosition)
+void G28(double *homePosition, bool source)
 {
 	//Move to Home
 
-    nextCommandedPosition[0] = homePosition[0];
-    nextCommandedPosition[1] = homePosition[1];
-    nextCommandedPosition[2] = homePosition[2];
-    nextCommandedPosition[3] = homePosition[3];
-    nextCommandedPosition[4] = homePosition[4];
+	commandedPosition[0] = homePosition[0];
+	commandedPosition[1] = homePosition[1];
+	commandedPosition[2] = homePosition[2];
+	commandedPosition[3] = homePosition[3];
+	commandedPosition[4] = homePosition[4];
 
-	commandedPosition[0] = nextCommandedPosition[0];
-	commandedPosition[1] = nextCommandedPosition[1];
-	commandedPosition[2] = nextCommandedPosition[2];
-	commandedPosition[3] = nextCommandedPosition[3];
-	commandedPosition[4] = nextCommandedPosition[4];
-
-    setupMotor();
+    setupMotor(source);
 }
 
 void G281(double x_d,double y_d,double z_d,double a_d, double b_d, double *homePosition)
@@ -307,6 +295,7 @@ void G90(int mode)
 	//Absolute Mode
 
     mode = 1;
+
 }
 
 void G91(int mode)
@@ -314,6 +303,7 @@ void G91(int mode)
 	//Relative Mode
 
     mode = 0;
+
 }
 
 void G92(double x_d,double y_d,double z_d,double a_d, double b_d, double *actualPosition)
@@ -332,6 +322,13 @@ void M00()
 	//Program Stop
 
 	inBendCycle = false;
+
+	//Set the commanded positions to actual positions so nothing moves after the 'stop' is done
+	commandedPosition[0]= actualPosition[0];
+	commandedPosition[1]= actualPosition[1];
+	commandedPosition[2]= actualPosition[2];
+	commandedPosition[3]= actualPosition[3];
+	commandedPosition[4]= actualPosition[4];
 
 	TIM3->CR1 &= ~TIM_CR1_CEN;
 }
