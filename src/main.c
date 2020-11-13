@@ -73,9 +73,6 @@ int main(void)
     	    openFile();
     	    isEndLine = readGCodeLine();	//Then read the first line to begin the process
 
-    	    //We have to find a way to read the first few lines to set up the bender before
-    	    //starting the bend cycle
-
     	}
 
     	if ((readNextLineFlag == true) && inBendCycle)
@@ -100,30 +97,6 @@ int main(void)
     			inBendCycle = false;
     			break;
     		}
-
-    		/*
-    		int timeout = 0;
-
-
-    		while(nextLineReady == false)
-    		{
-    			timeout++;
-				if (timeout > 10000)
-				{
-					break;
-				}
-    		}
-
-			commandedPosition[0] = nextCommandedPosition[0];
-			commandedPosition[1] = nextCommandedPosition[1];
-			commandedPosition[2] = nextCommandedPosition[2];
-			commandedPosition[3] = nextCommandedPosition[3];
-			commandedPosition[4] = nextCommandedPosition[4];
-
-
-    		//Read the next line of G-Code then call the motor subsystem
-    		isEndLine = readGCodeLine();
-    		*/
 
     	}
 

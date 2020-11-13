@@ -227,6 +227,11 @@ void CheckGCodeLine(char* line, bool source)
      	   readNextLineFlag = true;
     }
 
+    else if(strncmp(line,"M199",3) == 0)
+    {
+        M199();
+    }
+
     else
     {
     	if (source)
@@ -378,4 +383,10 @@ void M92(double x_d,double y_d,double z_d,double a_d, double b_d)
 	stepsPerMM[3] = a_d;
 	stepsPerMM[4] = b_d;
 
+}
+
+void M199()
+{
+    //Start bend cycle, custom M199 command
+    initBendCycleFlag = 1;
 }
