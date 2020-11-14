@@ -25,7 +25,7 @@
 "src/gcode.o"
 "src/main.o"
 "src/micro_wait.o"
-"src/motorSubsystem.o"
+"src/motor.o"
 "src/sd.o"
 "src/sdmm.o"
 "src/spi.o"

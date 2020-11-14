@@ -220,8 +220,6 @@ void usart1Send(const char *buffer)
 
 }
 
-
-
 void softwareTimerInit()
 {
     //Timer 14 for reporting back to computer software

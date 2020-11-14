@@ -11,7 +11,7 @@ C_SRCS += \
 ../src/ff.c \
 ../src/gcode.c \
 ../src/main.c \
-../src/motorSubsystem.c \
+../src/motor.c \
 ../src/sd.c \
 ../src/sdmm.c \
 ../src/spi.c \
@@ -25,7 +25,7 @@ OBJS += \
 ./src/gcode.o \
 ./src/main.o \
 ./src/micro_wait.o \
-./src/motorSubsystem.o \
+./src/motor.o \
 ./src/sd.o \
 ./src/sdmm.o \
 ./src/spi.o \
@@ -38,7 +38,7 @@ C_DEPS += \
 ./src/ff.d \
 ./src/gcode.d \
 ./src/main.d \
-./src/motorSubsystem.d \
+./src/motor.d \
 ./src/sd.d \
 ./src/sdmm.d \
 ./src/spi.d \

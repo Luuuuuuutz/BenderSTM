@@ -20,6 +20,7 @@ int ABSOLUTE;
 bool initBendCycleFlag;
 bool startBendCycle;
 bool inBendCycle;
+bool progSource;
 
 //SD Card Variables
 bool readNextLineFlag;
@@ -38,6 +39,10 @@ bool txFlag;
 bool zFlag;
 double stepsPerMM[5];                   //Array of the number of steps per mm for each axis motor
 
+//External button variables
+bool button1Flag;
+bool button2Flag;
+
 #else
 //If GLOBAL already exists when this header is called then reference the extern variables
 extern double actualPosition[5];
@@ -50,16 +55,27 @@ extern int ABSOLUTE;
 extern bool initBendCycleFlag;
 extern bool startBendCycle;
 extern bool inBendCycle;
+extern bool progSource;
 
+//SD Card Variables
 extern bool readNextLineFlag;
 extern bool nextLineReady;
 
+//USART variables
 extern char messageRX[RXLENGTH];
 extern char command[RXLENGTH];
 extern int rx_index;
 extern bool rxFlag;
+
+//Timer variables
 extern bool txFlag;
+
+//Stepper control variables
 extern bool zFlag;
 extern double stepsPerMM[5];                   //Array of the number of steps per mm for each axis motor
+
+//External button variables
+extern bool button1Flag;
+extern bool button2Flag;
 
 #endif

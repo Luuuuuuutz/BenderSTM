@@ -10,8 +10,8 @@
 #include "stm32f0xx.h"
 #include "stm32f0_discovery.h"
 #include <math.h>
+#include <motor.h>
 #include <stdint.h>
-#include "motorSubsystemCalls.h"
 
 //Global Variables:
 int moveX;           	//Difference in x to move in steps
@@ -21,13 +21,15 @@ int moveA;           	//Difference in a to move in steps
 int moveB;          	//Difference in b to move in steps
 int steps[5];           //Array of number of current steps moved for each position
 double updateMovement[5];   //Value of one step to update
-bool progSource = 1;    //1 if source is SD card, 0 if serial
 
 bool xReachedPos = 0;
 bool yReachedPos = 0;
 bool zReachedPos = 0;
 bool aReachedPos = 0;
 bool bReachedPos = 0;
+
+uint8_t debounce11;
+uint8_t debounce12;
 
 // Enable clock to timer3. Using timer3 because of general purpose usage.
 // Setup prescalar and arr so that the interrupt is triggered every 500 us.
@@ -44,9 +46,107 @@ void setupTimer3()
     TIM3->PSC = 48 - 1;
     TIM3->ARR = 500 - 1;
     TIM3->DIER |= TIM_DIER_UIE;
-    NVIC->ISER[0] = (1<<TIM3_IRQn);
+    NVIC->ISER[0] = 1<<TIM3_IRQn;
 
     NVIC_SetPriority(TIM3_IRQn,0);                                              //check priority, might need to change if another timer is needed for the pushbutton
+}
+
+void setupTimer15()
+{
+    RCC->APB2ENR |= RCC_APB2ENR_TIM15EN;    //Setup timer 15 to interrupt every 1ms
+    TIM15->PSC = 48 - 1;
+    TIM15->ARR = 1000 - 1;
+    TIM15->DIER |= TIM_DIER_UIE;
+    NVIC->ISER[0] = 1<<TIM15_IRQn;
+}
+
+void setupTimer16()
+{
+    RCC->APB2ENR |= RCC_APB2ENR_TIM15EN;    //Setup timer 16 to interrupt every 1ms
+    TIM16->PSC = 48 - 1;
+    TIM16->ARR = 1000 - 1;
+    TIM16->DIER |= TIM_DIER_UIE;
+    NVIC->ISER[0] = 1<<TIM16_IRQn;
+}
+
+void setupButtons()
+{
+    RCC->AHBENR |= RCC_AHBENR_GPIOCEN;
+
+    GPIOC->MODER &= ~(3<<(2*11));   //Input mode
+    GPIOC->MODER &= ~(3<<(2*12));   //Input mode
+
+    GPIOC->PUPDR &= ~(3<<(2*11));  //Pull down
+    GPIOC->PUPDR |= (2<<(2*11));
+
+    GPIOC->PUPDR &= ~(3<<(2*12));  //Pull down
+    GPIOC->PUPDR |= (2<<(2*12));
+
+    RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
+    SYSCFG->EXTICR[2] |= SYSCFG_EXTICR3_EXTI11_PC;
+    SYSCFG->EXTICR[3] |= SYSCFG_EXTICR4_EXTI12_PC;
+
+    EXTI->IMR |= EXTI_IMR_MR11;
+    EXTI->RTSR |= EXTI_RTSR_TR11;   //Enable rising edge interrupt for pin 11
+
+    EXTI->IMR |= EXTI_IMR_MR12;
+    EXTI->RTSR |= EXTI_RTSR_TR12;   //Enable rising edge interrupt for pin 12
+
+    NVIC->ISER[0] = 1<<EXTI4_15_IRQn;
+
+}
+
+void EXTI4_15_IRQHandler()
+{
+    if (EXTI->PR & EXTI_PR_PR11)
+    {
+        EXTI->PR |= EXTI_PR_PR11;
+        TIM15->CR1 |= TIM_CR1_CEN;
+    }
+
+    if (EXTI->PR & EXTI_PR_PR12)
+    {
+        EXTI->PR |= EXTI_PR_PR12;
+        TIM16->CR1 |= TIM_CR1_CEN;
+    }
+}
+
+void TIM15_IRQHandler()
+{
+    TIM15->SR = 0;          //CLEAR INTERRUPT
+
+    //Read the state of the input and bitwise shift into an array
+    debounce11 = debounce11 << 1;
+
+    if (GPIOC->IDR & 0x800)
+        debounce11 = debounce11 + 1;
+
+    if (debounce11 == 255)
+    {
+        TIM15->CR1 &= ~TIM_CR1_CEN; //Turn off the timer once the debouncing is done
+        button1Flag = true;
+        debounce11 = 0;
+    }
+
+}
+
+void TIM16_IRQHandler()
+{
+    TIM16->SR = 0;          //CLEAR INTERRUPT
+
+    //Read the state of the input and bitwise shift into an array
+    debounce12 = debounce12 << 1;
+
+    if (GPIOC->IDR & 0x1000)
+        debounce12 = debounce12 + 1;
+
+    if (debounce12 == 255)
+    {
+        TIM16->CR1 &= ~TIM_CR1_CEN; //Turn off the timer once the debouncing is done
+        button2Flag = true;
+        debounce12 = 0;
+    }
+
 }
 
 void setupGPIO()                                                               //possibly change name, check with Eric
@@ -54,7 +154,6 @@ void setupGPIO()                                                               /
     //enable clock to GPIOA, GPIOB, and GPIOC
     //set output mode for each pin
 
-                                                                                //POSSIBLY CHECK IF THE GPIO USART SETUP NEEDS TO GO HERE AS WELL!!!!
     //Clock to GPIOA
     RCC->AHBENR |= RCC_AHBENR_GPIOAEN;
     //Clock to GPIOB
@@ -153,12 +252,10 @@ void disableSteppers(bool x, bool y, bool z, bool a, bool b)
     	GPIOB->BSRR |= (1<<B_EN);                              	//Disables B driver
 }
 
-void setupMotor(bool source)
+void setupMotor()
 {
     //First disable the timer so it doesn't trigger while setting up the motor
 	TIM3->CR1 &= ~TIM_CR1_CEN;
-
-	progSource = source;
 
 	xReachedPos = 0;    //Reset the position reached bools
 	yReachedPos = 0;
@@ -254,8 +351,10 @@ void TIM3_IRQHandler(void)
 
 }
 
-void advanceMotor(void)                                             //check on how to pass arrays, might need to include zFlag
+void advanceMotor(void)
 {
+
+    //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     if(steps[0] < (2*moveX))                                                          //Checks if actualX is different than commandedX
     {
         steps[0]++;
@@ -265,15 +364,14 @@ void advanceMotor(void)                                             //check on h
         bitcheck = (GPIOA->ODR >> X_PLS) & 1;                                              //Finds the value of the x-pulse bit.
         GPIOA->ODR ^= (~bitcheck ^ (GPIOA->ODR >> X_PLS)) & (1 << X_PLS);             //check, Should check if the bitvalue for x-pulse is either a 1 or 0 and flips it.
         //Two lines above came from Vitorbnc via https://gist.github.com/Vitorbnc/e35f1ff1485d660edf365241dacfa387
-
-                                                                                //MENTION IN DESIGN DOC ALGORITHM!!
     }
 
     if(steps[0] >= (2*moveX))
     {
-        xReachedPos = 1;
+        xReachedPos = true;
     }
 
+    //YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
     if(steps[1] < (2*moveY))                                                          //Checks if actualY is different than commandedY
     {
         steps[1]++;
@@ -287,9 +385,10 @@ void advanceMotor(void)                                             //check on h
 
     if(steps[1] >= (2*moveY))
     {
-        yReachedPos = 1;
+        yReachedPos = true;
     }
 
+    //ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
     if(steps[2] < (2*moveZ))                                                          //Checks if actualZ is different than commandedZ
     {
         steps[2]++;
@@ -304,9 +403,9 @@ void advanceMotor(void)                                             //check on h
 
     if(steps[2] >= (2*moveZ))                                             //Checks if zFlag is reached. If reached, sets zFlag so next line of G-Code can be called.
     {
-        zReachedPos = 1;
+        zReachedPos = true;
 
-        if (progSource) //Only set the z flag if the source is the SD card
+        if (inBendCycle) //Only set the z flag if the source is the SD card
         {
             zFlag = true;                                                       //CHECK, MIGHT MOVE STEPS[] = 0 HERE
             TIM3->CR1 &= ~TIM_CR1_CEN;
@@ -314,6 +413,7 @@ void advanceMotor(void)                                             //check on h
 
     }
 
+    //AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
     if(steps[3] < (2*moveA))                                                          //Checks if actualA is different than commandedA
     {
         steps[3]++;
@@ -327,9 +427,10 @@ void advanceMotor(void)                                             //check on h
 
     if(steps[3] >= (2*moveA))
     {
-        aReachedPos = 1;
+        aReachedPos = true;
     }
 
+    //BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
     if(steps[4] < (2*moveB))                                                          //Checks if actualB is different than commandedB
     {
         steps[4]++;
@@ -343,8 +444,9 @@ void advanceMotor(void)                                             //check on h
 
     if(steps[4] >= (2*moveB))
     {
-        bReachedPos = 1;
+        bReachedPos = true;
     }
+
 
     if (xReachedPos & yReachedPos & zReachedPos & aReachedPos & bReachedPos)
     {

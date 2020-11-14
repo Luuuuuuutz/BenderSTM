@@ -1,11 +1,14 @@
 #include "global.h"
 
-#ifndef __MOTORSUBSYSTEMCALLS_H                                                 //NOT SURE IF I NEED EITHER OF THESE, CHECK
+#ifndef __MOTORSUBSYSTEMCALLS_H
 #define __MOTORSUBSYSTEMCALLS_H
 
 void setupTimer3();
-void setupGPIO();                                                              //might need to change name
-void setupMotor(bool);
+void setupTimer15();
+void setupTimer16();
+void setupButtons();
+void setupGPIO();
+void setupMotor();
 void advanceMotor();
 
 #define X_PLS 10

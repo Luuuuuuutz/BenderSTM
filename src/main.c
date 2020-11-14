@@ -8,17 +8,17 @@
   ******************************************************************************
 */
 
+#include <motor.h>
 #include "stm32f0xx.h"
 #include "stm32f0_discovery.h"
 #include "string.h"
 
 #include "global.h"
 #include "usart.h"
-#include "motorSubsystemCalls.h"
 #include "spi.h"
 #include "ff.h"
 #include "fat16.h"
-
+#include "motor.h"
 #include "gcode.h"
 
 
@@ -30,26 +30,26 @@ int main(void)
 
 	bool isEndLine;
 
+	button1Flag = false;
+	button2Flag = false;
+
     setupTimer3();
     setupGPIO();
+
+    setupTimer15();
+    setupTimer16();
+    setupButtons();
 
     usart1Init(115200);         //Enable USART1 at 115200 baud
     usart1DMAInit();            //Initialize DMA for USART1
     softwareTimerInit();        //Start the timer to send data over USART
 
-
-
+    //Set the default positions and parameters
     actualPosition[0] = 0.000;
     actualPosition[1] = 0.000;
     actualPosition[2] = 0.000;
     actualPosition[3] = 0.000;
     actualPosition[4] = 0.000;
-
-    commandedPosition[0] = 30.000;
-    commandedPosition[1] = -35.000;
-    commandedPosition[2] = 80.000;
-    commandedPosition[3] = 45.000;
-    commandedPosition[4] = -30.000;
 
     stepsPerMM[0] = 500;
     stepsPerMM[1] = 500;
@@ -57,12 +57,22 @@ int main(void)
     stepsPerMM[3] = 55.556;
     stepsPerMM[4] = 55.556;
 
+    /*
+
+    commandedPosition[0] = 30.000;
+    commandedPosition[1] = -35.000;
+    commandedPosition[2] = 80.000;
+    commandedPosition[3] = 45.000;
+    commandedPosition[4] = -30.000;
+
     setupMotor(false);
 
-
+     */
 
     while(1)
     {
+        //Various flags can call things in the main loop
+
     	if (initBendCycleFlag == true)
     	{
     		initBendCycleFlag = false;
@@ -75,38 +85,68 @@ int main(void)
 
     	}
 
+
     	if ((readNextLineFlag == true) && inBendCycle)
     	{
     		readNextLineFlag = false;
-    		isEndLine = readGCodeLine();
-    		if (isEndLine)
+
+    		if (progSource)     //If the program source is the SD card then proceed
     		{
-    			inBendCycle = false;
-    			break;
+    		    isEndLine = readGCodeLine();
+    		    if (isEndLine)
+    		    {
+    		        inBendCycle = false;
+    		        break;
+    		    }
     		}
+            else    //If the program source is USB then instead write the nextLine to usb
+                usart1Send("nextLine\n");
+
     	}
+
 
     	if ((zFlag == true) && inBendCycle)
     	{
     		zFlag = false;
 
-    		isEndLine = readGCodeLine();
-
-    		if (isEndLine)
-    		{
-    			inBendCycle = false;
-    			break;
-    		}
+            if (progSource)     //If the program source is the SD card then proceed
+            {
+                isEndLine = readGCodeLine();
+                if (isEndLine)
+                {
+                    inBendCycle = false;
+                    break;
+                }
+            }
+            else
+                usart1Send("zFlag\n"); //Send the zflag over serial
 
     	}
+
+
+    	if (button1Flag == true)
+    	{
+    	    button1Flag = false;    //Button 1 starts the bender
+    	    progSource = true;
+
+    	    if (inBendCycle == false)       //Only initiailize the bender if it isn't already started
+    	        initBendCycleFlag = true;
+    	}
+
+
+        if (button2Flag == true)
+        {
+            button2Flag = false;    //Button 2 stops the bender
+            M00();  //To stop the bender, simply call the M00 function
+        }
+
 
         if (rxFlag == true)
         {
             rxFlag = false; //Reset the flag
-            //Do work
-            //Call Vidya's function to interpret G Code
             CheckGCodeLine(command, false);
         }
+
 
         if (txFlag == true)
         {

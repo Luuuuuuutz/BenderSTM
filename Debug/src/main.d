@@ -1,4 +1,5 @@
-src/main.o: ../src/main.c \
+src/main.o: ../src/main.c C:/Users/eric/workspace/BenderSTM/inc/motor.h \
+ C:/Users/eric/workspace/BenderSTM/inc/global.h \
  C:/Users/eric/workspace/BenderSTM/CMSIS/device/stm32f0xx.h \
  C:/Users/eric/workspace/BenderSTM/CMSIS/core/core_cm0.h \
  C:/Users/eric/workspace/BenderSTM/CMSIS/core/core_cmInstr.h \
@@ -28,13 +29,15 @@ src/main.o: ../src/main.c \
  C:/Users/eric/workspace/BenderSTM/Utilities/stm32f0_discovery.h \
  C:/Users/eric/workspace/BenderSTM/inc/global.h \
  C:/Users/eric/workspace/BenderSTM/inc/usart.h \
- C:/Users/eric/workspace/BenderSTM/inc/global.h \
- C:/Users/eric/workspace/BenderSTM/inc/motorSubsystemCalls.h \
  C:/Users/eric/workspace/BenderSTM/inc/spi.h \
  C:/Users/eric/workspace/BenderSTM/inc/ff.h \
  C:/Users/eric/workspace/BenderSTM/inc/ffconf.h \
  C:/Users/eric/workspace/BenderSTM/inc/fat16.h \
  C:/Users/eric/workspace/BenderSTM/inc/gcode.h
+
+C:/Users/eric/workspace/BenderSTM/inc/motor.h:
+
+C:/Users/eric/workspace/BenderSTM/inc/global.h:
 
 C:/Users/eric/workspace/BenderSTM/CMSIS/device/stm32f0xx.h:
 
@@ -93,10 +96,6 @@ C:/Users/eric/workspace/BenderSTM/Utilities/stm32f0_discovery.h:
 C:/Users/eric/workspace/BenderSTM/inc/global.h:
 
 C:/Users/eric/workspace/BenderSTM/inc/usart.h:
-
-C:/Users/eric/workspace/BenderSTM/inc/global.h:
-
-C:/Users/eric/workspace/BenderSTM/inc/motorSubsystemCalls.h:
 
 C:/Users/eric/workspace/BenderSTM/inc/spi.h:
 

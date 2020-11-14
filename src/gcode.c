@@ -70,7 +70,6 @@ bool readGCodeLine()
 
 void CheckGCodeLine(char* line, bool source)
 {
-
 	//Source boolean - True if function comes from SD Card, false if UART
 
 	char* data_ptr;
@@ -137,94 +136,86 @@ void CheckGCodeLine(char* line, bool source)
     if(strncmp(line,"G0",2) == 0)
     {
        G0(x_d, y_d, z_d, a_d, b_d, source);
-
     }
 
     else if((strncmp(line,"G01",3) == 0) || (strncmp(line,"G1",2) == 0))
     {
         G1(x_d, y_d, z_d, a_d, b_d, source);
-
     }
 
     else if(strncmp(line,"G20",3) == 0)
     {
-       if (source)
-    	   readNextLineFlag = true;
+        readNextLineFlag = true;
     }
 
     else if(strncmp(line,"G21",3) == 0)
     {
-       if (source)
-    	   readNextLineFlag = true;
+        readNextLineFlag = true;
     }
 
     else if(strncmp(line,"G28",3) == 0)
     {
         G28(homePosition, source);
-
     }
 
     else if(strncmp(line,"G28.1",5) == 0)
     {
        G281(x_d,y_d,z_d,a_d,b_d,homePosition);
-       if (source)
-    	   readNextLineFlag = true;
+       readNextLineFlag = true;
     }
 
     else if(strncmp(line,"G90",3) == 0)
     {
         G90(ABSOLUTE);
-        if (source)
-     	   readNextLineFlag = true;
+     	readNextLineFlag = true;
     }
 
     else if(strncmp(line,"G91",3) == 0)
     {
         G91(RELATIVE);
-        if (source)
-     	   readNextLineFlag = true;
+     	readNextLineFlag = true;
     }
 
     else if(strncmp(line,"G92",3) == 0)
     {
        G92(x_d,y_d,z_d,a_d,b_d,actualPosition);
-       if (source)
-    	   readNextLineFlag = true;
+       readNextLineFlag = true;
     }
 
     else if(strncmp(line,"M00",3) == 0)
     {
     	M00();
-        if (source)
-     	   readNextLineFlag = true;
+    	readNextLineFlag = true;
     }
 
     else if(strncmp(line,"M01",3) == 0)
     {
     	M01();
-        if (source)
-     	   readNextLineFlag = true;
+    	readNextLineFlag = true;
+    }
+
+    else if(strncmp(line,"M02",3) == 0)
+    {
+        M02();
+        readNextLineFlag = true;
     }
 
     else if(strncmp(line,"M17",3) == 0)
     {
     	M17(x_d, y_d, z_d, a_d, b_d);
-        if (source)
-     	   readNextLineFlag = true;
+    	readNextLineFlag = true;
     }
 
     else if(strncmp(line,"M18",3) == 0)
     {
     	M18(x_d, y_d, z_d, a_d, b_d);
-        if (source)
-     	   readNextLineFlag = true;
+    	readNextLineFlag = true;
     }
 
     else if(strncmp(line,"M92",3) == 0)
     {
     	M92(x_d, y_d, z_d, a_d, b_d);
-        if (source)
-     	   readNextLineFlag = true;
+    	readNextLineFlag = true;
     }
 
     else if(strncmp(line,"M199",3) == 0)
@@ -232,10 +223,16 @@ void CheckGCodeLine(char* line, bool source)
         M199();
     }
 
+    else if(strncmp(line,"M200",3) == 0)
+    {
+        M200();
+        usart1Send("nextLine\n");
+    }
+
     else
     {
-    	if (source)
-        readNextLineFlag = true;
+    	readNextLineFlag = true;
+    	usart1Send("nextLine\n");
     }
 
     memset(line,0,100);
@@ -347,6 +344,15 @@ void M01()
 	TIM3->CR1 &= ~TIM_CR1_CEN;
 }
 
+void M02()
+{
+    //Program End
+
+    inBendCycle = false;
+
+    TIM3->CR1 &= ~TIM_CR1_CEN;
+}
+
 void M17(double x_d,double y_d,double z_d,double a_d, double b_d)
 {
 	//Enable Stepper Motors
@@ -357,7 +363,7 @@ void M17(double x_d,double y_d,double z_d,double a_d, double b_d)
 	bool a = (bool) a_d;
 	bool b = (bool) b_d;
 
-	enableSteppers (x, y, z, a, b);
+	enableSteppers(x, y, z, a, b);
 }
 
 void M18(double x_d,double y_d,double z_d,double a_d, double b_d)
@@ -370,7 +376,7 @@ void M18(double x_d,double y_d,double z_d,double a_d, double b_d)
 	bool a = (bool) a_d;
 	bool b = (bool) b_d;
 
-	disableSteppers (x, y, z, a, b);
+	disableSteppers(x, y, z, a, b);
 }
 
 void M92(double x_d,double y_d,double z_d,double a_d, double b_d)
@@ -387,6 +393,14 @@ void M92(double x_d,double y_d,double z_d,double a_d, double b_d)
 
 void M199()
 {
-    //Start bend cycle, custom M199 command
-    initBendCycleFlag = 1;
+    //Start bend cycle, custom M199 command for SD card start
+    initBendCycleFlag = true;
+    progSource = true;  //True for SD card control
+}
+
+void M200()
+{
+    //Start bend cycle, custom M200 command for USb start
+    inBendCycle = true;
+    progSource = false; //False for USB control
 }

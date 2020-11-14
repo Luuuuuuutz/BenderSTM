@@ -17,9 +17,11 @@ void G91(int mode);
 void G92(double x_d,double y_d,double z_d,double a_d, double b_d, double *actual);
 void M00(void);
 void M01(void);
+void M02(void);
 void M17(double x_d,double y_d,double z_d,double a_d, double b_d);
 void M18(double x_d,double y_d,double z_d,double a_d, double b_d);
 void M92(double x_d,double y_d,double z_d,double a_d, double b_d);
-
+void M199(void);
+void M200(void);
 
 #endif
