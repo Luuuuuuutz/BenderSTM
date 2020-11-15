@@ -48,7 +48,8 @@ void setupTimer3()
     TIM3->DIER |= TIM_DIER_UIE;
     NVIC->ISER[0] = 1<<TIM3_IRQn;
 
-    NVIC_SetPriority(TIM3_IRQn,0);                                              //check priority, might need to change if another timer is needed for the pushbutton
+    //We don't want the highest priority because UART is at 115200 baud and missing one bit would not be good
+    //NVIC_SetPriority(TIM3_IRQn,0);                                              //check priority, might need to change if another timer is needed for the pushbutton
 }
 
 void setupTimer15()

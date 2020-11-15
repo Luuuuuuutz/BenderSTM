@@ -22,6 +22,7 @@
 "Utilities/stm32f0_discovery.o"
 "src/fat16.o"
 "src/ff.o"
+"src/flash.o"
 "src/gcode.o"
 "src/main.o"
 "src/micro_wait.o"

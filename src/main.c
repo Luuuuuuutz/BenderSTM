@@ -20,6 +20,7 @@
 #include "fat16.h"
 #include "motor.h"
 #include "gcode.h"
+#include "flash.h"
 
 
 int main(void)
@@ -68,6 +69,29 @@ int main(void)
     setupMotor(false);
 
      */
+
+    setupPVD();
+
+    //int memory = 0x0800FC00;    //Starting location in memory
+
+    //FLASH_Unlock();
+    //FLASH_ErasePage(memory);
+    //FLASH_Lock();
+
+/*
+    actualXWhole = 50;
+    actualXDec = 123;
+    actualYWhole = 60;
+    actualYDec = 456;
+    actualZWhole = -20;
+    actualZDec = 105;
+    actualAWhole = -100;
+    actualADec = 967;
+    actualBWhole = -2;
+    actualBDec = 167;
+*/
+    //flashWritePosition();
+    flashReadPosition();
 
     while(1)
     {
@@ -154,20 +178,20 @@ int main(void)
             //Since the STM32 is dumb we can't use sprintf with floats/doubles so we convert to ints
 
             //Actual positions
-            int actualXWhole = (int) actualPosition[0];
-            int actualXDec = (int) fabs((actualPosition[0] - actualXWhole) * 1000);
+            actualXWhole = (int) actualPosition[0];
+            actualXDec = (int) fabs((actualPosition[0] - actualXWhole) * 1000);
 
-            int actualYWhole = (int) actualPosition[1];
-            int actualYDec = (int) fabs((actualPosition[1] - actualYWhole) * 1000);
+            actualYWhole = (int) actualPosition[1];
+            actualYDec = (int) fabs((actualPosition[1] - actualYWhole) * 1000);
 
-            int actualZWhole = (int) actualPosition[2];
-            int actualZDec = (int) fabs((actualPosition[2] - actualZWhole) * 1000);
+            actualZWhole = (int) actualPosition[2];
+            actualZDec = (int) fabs((actualPosition[2] - actualZWhole) * 1000);
 
-            int actualAWhole = (int) actualPosition[3];
-            int actualADec = (int) fabs((actualPosition[3] - actualAWhole) * 1000);
+            actualAWhole = (int) actualPosition[3];
+            actualADec = (int) fabs((actualPosition[3] - actualAWhole) * 1000);
 
-            int actualBWhole = (int) actualPosition[4];
-            int actualBDec = (int) fabs((actualPosition[4] - actualBWhole) * 1000);
+            actualBWhole = (int) actualPosition[4];
+            actualBDec = (int) fabs((actualPosition[4] - actualBWhole) * 1000);
 
             //Commanded positions
             int commandedXWhole = (int) commandedPosition[0];

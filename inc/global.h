@@ -32,6 +32,17 @@ char command[RXLENGTH];
 int rx_index;
 bool rxFlag;
 
+int actualXWhole;
+int actualXDec;
+int actualYWhole;
+int actualYDec;
+int actualZWhole;
+int actualZDec;
+int actualAWhole;
+int actualADec;
+int actualBWhole;
+int actualBDec;
+
 //Timer variables
 bool txFlag;
 

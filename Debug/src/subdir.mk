@@ -9,6 +9,7 @@ S_SRCS += \
 C_SRCS += \
 ../src/fat16.c \
 ../src/ff.c \
+../src/flash.c \
 ../src/gcode.c \
 ../src/main.c \
 ../src/motor.c \
@@ -22,6 +23,7 @@ C_SRCS += \
 OBJS += \
 ./src/fat16.o \
 ./src/ff.o \
+./src/flash.o \
 ./src/gcode.o \
 ./src/main.o \
 ./src/micro_wait.o \
@@ -36,6 +38,7 @@ OBJS += \
 C_DEPS += \
 ./src/fat16.d \
 ./src/ff.d \
+./src/flash.d \
 ./src/gcode.d \
 ./src/main.d \
 ./src/motor.d \
