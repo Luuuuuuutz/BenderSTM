@@ -34,6 +34,10 @@ int main(void)
 	button1Flag = false;
 	button2Flag = false;
 
+
+	progSource = true;	//True for SD card
+
+
     setupTimer3();
     setupGPIO();
 
@@ -70,7 +74,7 @@ int main(void)
 
      */
 
-    setupPVD();
+    //setupPVD();
 
     //int memory = 0x0800FC00;    //Starting location in memory
 
@@ -91,7 +95,7 @@ int main(void)
     actualBDec = 167;
 */
     //flashWritePosition();
-    flashReadPosition();
+    //flashReadPosition();
 
     while(1)
     {
@@ -144,9 +148,7 @@ int main(void)
             }
             else
                 usart1Send("zFlag\n"); //Send the zflag over serial
-
     	}
-
 
     	if (button1Flag == true)
     	{

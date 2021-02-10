@@ -99,17 +99,19 @@ void setupButtons()
 
 void EXTI4_15_IRQHandler()
 {
-    if (EXTI->PR & EXTI_PR_PR11)
+    if (EXTI->PR & EXTI_PR_PR12)
     {
-        EXTI->PR |= EXTI_PR_PR11;
+        EXTI->PR |= EXTI_PR_PR12;
         TIM15->CR1 |= TIM_CR1_CEN;
     }
 
+    /*
     if (EXTI->PR & EXTI_PR_PR12)
     {
         EXTI->PR |= EXTI_PR_PR12;
         TIM16->CR1 |= TIM_CR1_CEN;
     }
+    */
 }
 
 void TIM15_IRQHandler()
@@ -119,7 +121,7 @@ void TIM15_IRQHandler()
     //Read the state of the input and bitwise shift into an array
     debounce11 = debounce11 << 1;
 
-    if (GPIOC->IDR & 0x800)
+    if (GPIOC->IDR & 0x1000)
         debounce11 = debounce11 + 1;
 
     if (debounce11 == 255)
@@ -138,7 +140,7 @@ void TIM16_IRQHandler()
     //Read the state of the input and bitwise shift into an array
     debounce12 = debounce12 << 1;
 
-    if (GPIOC->IDR & 0x1000)
+    if (GPIOC->IDR & 0x800)
         debounce12 = debounce12 + 1;
 
     if (debounce12 == 255)
